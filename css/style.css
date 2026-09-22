@@ -591,102 +591,54 @@ img { max-width: 100%; display: block; }
   background: var(--line);
 }
 
-/* ---- 캐릭터 ---- */
+/* ---- 캐릭터 (실제 픽셀아트 스프라이트, 기획→운영→개발 순서로 외형 교체) ---- */
 .pixel-char {
   position: absolute;
   left: 4%;
   bottom: 30px;
-  width: 40px;
-  height: 56px;
-  animation: char-run 6.5s ease-in-out forwards;
+  width: 84px;
+  height: 87px;
+  animation: char-path 9.2s linear forwards;
 }
 
-.char-head {
-  position: absolute;
-  top: 0;
-  left: 8px;
-  width: 24px;
-  height: 20px;
-  background: var(--ink);
-  border: 3px solid var(--border);
+.pixel-char.flash .char-sprite {
+  filter: brightness(1.6) drop-shadow(0 0 6px var(--gold));
 }
 
-.char-body {
-  position: absolute;
-  top: 18px;
-  left: 6px;
-  width: 28px;
-  height: 22px;
-  background: var(--gold);
-  border: 3px solid var(--border);
+.char-sprite {
+  width: 100%;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-size: 168px 87px;
+  background-position-x: 0;
+  image-rendering: pixelated;
+  animation: run-cycle .32s steps(1) infinite;
+  transition: filter .15s ease;
 }
 
-.char-leg {
-  position: absolute;
-  bottom: 0;
-  width: 10px;
-  height: 16px;
-  background: var(--border);
+.costume-planner   .char-sprite { background-image: url('../assets/sprite-planner.png'); }
+.costume-operator  .char-sprite { background-image: url('../assets/sprite-operator.png'); }
+.costume-developer .char-sprite { background-image: url('../assets/sprite-developer.png'); }
+
+@keyframes run-cycle {
+  0%, 49.9%  { background-position-x: 0; }
+  50%, 100%  { background-position-x: -84px; }
 }
 
-.char-leg-l { left: 8px; }
-.char-leg-r { left: 22px; }
-
-.char-hat,
-.char-pack,
-.char-laptop {
-  position: absolute;
-  border: 3px solid var(--border);
-  opacity: 0;
-  transform: translateY(6px) scale(.6);
-}
-
-.char-hat {
-  top: -10px;
-  left: 4px;
-  width: 32px;
-  height: 10px;
-  background: var(--mint);
-  animation: equip-pop .3s ease-out .8s forwards;
-}
-
-.char-pack {
-  top: 20px;
-  left: -8px;
-  width: 12px;
-  height: 18px;
-  background: var(--rose);
-  animation: equip-pop .3s ease-out 2.2s forwards;
-}
-
-.char-laptop {
-  top: 24px;
-  left: 30px;
-  width: 14px;
-  height: 10px;
-  background: var(--bg-panel-alt);
-  animation: equip-pop .3s ease-out 3.7s forwards;
-}
-
-@keyframes equip-pop {
-  from { opacity: 0; transform: translateY(6px) scale(.6); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-@keyframes char-run {
-  0%   { left: 4%;  bottom: 30px; }
-  5%   { left: 9%;  bottom: 90px; }
-  12%  { left: 20%; bottom: 30px; }
-  18%  { left: 20%; bottom: 30px; }
-  25%  { left: 34%; bottom: 90px; }
-  33%  { left: 48%; bottom: 30px; }
-  40%  { left: 48%; bottom: 30px; }
-  48%  { left: 63%; bottom: 90px; }
-  56%  { left: 78%; bottom: 30px; }
-  64%  { left: 78%; bottom: 30px; }
-  75%  { left: 82%; bottom: 58px; }
-  85%  { left: 78%; bottom: 30px; }
-  100% { left: 78%; bottom: 30px; }
+@keyframes char-path {
+  0%     { left: 4%;  bottom: 30px; }
+  10%    { bottom: 42px; }
+  20%    { bottom: 30px; }
+  30%    { bottom: 42px; }
+  32.6%  { left: 27%; bottom: 30px; }
+  42%    { bottom: 42px; }
+  52%    { bottom: 30px; }
+  61.9%  { left: 55%; bottom: 30px; }
+  71%    { bottom: 42px; }
+  81%    { bottom: 30px; }
+  91.3%  { left: 83%; bottom: 30px; }
+  95%    { bottom: 48px; }
+  100%   { left: 83%; bottom: 30px; }
 }
 
 /* ---- 아이템 ---- */
@@ -699,9 +651,9 @@ img { max-width: 100%; display: block; }
   gap: .3rem;
 }
 
-.intro-item-1 { left: calc(20% - 18px); animation: item-collect .35s ease-in .8s forwards; }
-.intro-item-2 { left: calc(48% - 18px); animation: item-collect .35s ease-in 2.2s forwards; }
-.intro-item-3 { left: calc(78% - 18px); animation: item-collect .35s ease-in 3.7s forwards; }
+.intro-item-1 { left: calc(27% - 18px); animation: item-collect .35s ease-in 3.0s forwards; }
+.intro-item-2 { left: calc(55% - 18px); animation: item-collect .35s ease-in 5.7s forwards; }
+.intro-item-3 { left: calc(83% - 18px); animation: item-collect .35s ease-in 8.4s forwards; }
 
 .item-icon {
   display: flex;
@@ -733,9 +685,9 @@ img { max-width: 100%; display: block; }
   white-space: nowrap;
 }
 
-.intro-item-1 .item-popup { animation: item-popup .9s ease-out .8s forwards; }
-.intro-item-2 .item-popup { animation: item-popup .9s ease-out 2.2s forwards; }
-.intro-item-3 .item-popup { animation: item-popup .9s ease-out 3.7s forwards; }
+.intro-item-1 .item-popup { animation: item-popup .9s ease-out 3.0s forwards; }
+.intro-item-2 .item-popup { animation: item-popup .9s ease-out 5.7s forwards; }
+.intro-item-3 .item-popup { animation: item-popup .9s ease-out 8.4s forwards; }
 
 @keyframes item-collect {
   0%   { opacity: 1; transform: scale(1) translateY(0); }
@@ -764,8 +716,7 @@ img { max-width: 100%; display: block; }
 .intro-dots { animation: dots 1.4s steps(1) infinite; }
 
 @media (prefers-reduced-motion: reduce) {
-  .pixel-char,
-  .char-hat, .char-pack, .char-laptop,
+  .pixel-char, .char-sprite,
   .intro-item, .item-popup, .intro-dots {
     animation: none !important;
   }
