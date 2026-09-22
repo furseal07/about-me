@@ -40,8 +40,11 @@ document.addEventListener('DOMContentLoaded', function () {
   var pageRegions = document.querySelectorAll('.site-header, main, .site-footer');
   var names = ['기획', '운영', '개발'];
   var captions = ['아이디어를 구체적인 계획으로.', '꾸준한 운영으로 더 나은 결과를.', '직접 만드는 힘까지 더했습니다.'];
-  var pickups = [1200, 2500, 3800];
-  var duration = 4500;
+  // 각 아이템 획득 후 해당 의상과 설명을 3초씩 보여줍니다.
+  var stageDuration = 3000;
+  var pickupLead = 1200;
+  var pickups = names.map(function (_, index) { return pickupLead + index * stageDuration; });
+  var duration = pickups[pickups.length - 1] + stageDuration;
   var playing = false;
   var elapsed = 0;
   var lastTime = null;
@@ -63,7 +66,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function render(time) {
     // All moving elements share this clock; hidden tabs pause it without skipped pickups.
-    var distance = time * (stageWidth * .72 / 1300);
+    var travelSpeed = stageWidth * .72 / stageDuration;
+    var distance = time * travelSpeed;
     far.style.transform = 'translateX(' + -(distance * .1 % 320) + 'px)';
     near.style.transform = 'translateX(' + -(distance * .24 % 280) + 'px)';
     ground.style.transform = 'translateX(' + -(distance % 40) + 'px)';
@@ -84,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     items.forEach(function (item, index) {
       var delta = pickups[index] - time;
-      var x = actorX + delta * (stageWidth * .72 / 1300);
+      var x = actorX + delta * travelSpeed;
       var absorption = clamp(-delta / 180, 0, 1);
       var float = delta > 0 ? Math.sin(time / 250 + index) * 3 : -absorption * 9;
       item.style.transform = 'translate(' + (x - 24) + 'px,' + float + 'px) scale(' + (1 - absorption * .65) + ')';
