@@ -578,7 +578,42 @@ img { max-width: 100%; display: block; }
   letter-spacing: .06em;
   color: var(--gold);
 }
-.intro-title { margin: 0; color: var(--ink); font-size: clamp(1.15rem, 3vw, 1.6rem); font-weight: 600; }
+/* RPG 칭호 명패: 금색 이중 테두리와 좌우 픽셀 월계수. */
+.intro-title {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  position: relative;
+  margin: .25rem 4px 8px;
+  padding: .8rem 1.4rem;
+  border: 1px solid #c4a063;
+  background: linear-gradient(180deg, #393044 0%, #272238 55%, #211e31 100%);
+  box-shadow:
+    0 0 0 3px #141222,
+    0 0 0 4px #705934,
+    inset 0 0 0 3px #211d30,
+    inset 0 0 0 4px #8d704b66,
+    0 7px 0 #100f22;
+  color: #ffe4a8;
+  font-family: var(--font-pixel);
+  font-size: clamp(1.15rem, 3vw, 1.6rem);
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: .07em;
+  text-shadow: 0 2px 0 #100f22;
+  white-space: nowrap;
+}
+.intro-title::before,
+.intro-title::after {
+  content: '';
+  flex: 0 0 24px;
+  width: 24px;
+  height: 32px;
+  background: linear-gradient(180deg, #ffe4a8, #b58c4a);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 32'%3E%3Cpath d='M4 1h4v6H4zM1 8h4v7H1zM6 9h4v7H6zM3 17h4v7H3zM9 17h4v7H9zM7 25h6v4H7zM14 24h4v6h-4zM13 29h9v3h-9z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.intro-title::after { transform: scaleX(-1); }
 .intro-stage {
   --actor-x: 25%;
   --sprite-size: 160px;
@@ -714,6 +749,8 @@ main:focus { outline: none; }
 
 @media (max-width: 640px) {
   .intro { gap: 1.25rem; }
+  .intro-title { gap: .7rem; padding: .7rem 1rem; }
+  .intro-title::before, .intro-title::after { flex-basis: 20px; width: 20px; height: 27px; }
   .intro-stage { --actor-x: 25%; --sprite-size: 124px; height: 230px; }
   .intro-item { bottom: 65px; }
   .pickup-text { bottom: 170px; }
@@ -724,7 +761,8 @@ main:focus { outline: none; }
   .intro-stage { height: 175px; flex-shrink: 0; }
   .intro-heading { align-self: flex-start; text-align: left; padding-left: 1rem; padding-right: 8rem; }
   .intro-eyebrow { margin-bottom: .15rem; font-size: 1rem; }
-  .intro-title { font-size: 1.125rem; }
+  .intro-title { margin-top: .2rem; margin-bottom: 4px; padding: .3rem .8rem; gap: .65rem; font-size: 1.125rem; }
+  .intro-title::before, .intro-title::after { flex-basis: 18px; width: 18px; height: 24px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
