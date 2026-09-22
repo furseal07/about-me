@@ -1,11 +1,12 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-  /* ---------- 인트로 (캐릭터가 달리다가 아이템 먹고 외형 교체) ---------- */
+  /* ---------- 인트로 (도시를 달리다가 아이템이 다가와 외형 교체) ---------- */
   var intro = document.getElementById('intro');
   var introSkip = document.getElementById('introSkip');
   var pixelChar = document.getElementById('pixelChar');
   var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var costumeTimers = [];
+  var INTRO_TOTAL_MS = 9600; // 아이템3 도착(8.4s) 이후 잠깐 정지하는 여유 포함
+  var timers = [];
 
   function setCostume(name) {
     if (!pixelChar) return;
@@ -19,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!intro || intro.classList.contains('intro-hide')) return;
     intro.classList.add('intro-hide');
     document.body.classList.remove('intro-active');
-    costumeTimers.forEach(clearTimeout);
+    timers.forEach(clearTimeout);
     setTimeout(function () {
       intro.style.display = 'none';
     }, 650);
@@ -35,18 +36,10 @@ document.addEventListener('DOMContentLoaded', function () {
         introSkip.addEventListener('click', endIntro);
       }
 
-      // 기획(시작) → 운영(3.0s, 아이템1 먹는 시점) → 개발(5.7s, 아이템2 먹는 시점)
-      costumeTimers.push(setTimeout(function () { setCostume('operator'); }, 3000));
-      costumeTimers.push(setTimeout(function () { setCostume('developer'); }, 5700));
-
-      if (pixelChar) {
-        pixelChar.addEventListener('animationend', function () {
-          setTimeout(endIntro, 500);
-        });
-      }
-
-      // 애니메이션이 어떤 이유로든 끝나지 않을 경우를 대비한 안전장치
-      setTimeout(endIntro, 12000);
+      // 아이템이 캐릭터에 도착하는 순간(3.0s / 5.7s / 8.4s)에 맞춰 외형 교체
+      timers.push(setTimeout(function () { setCostume('operator'); }, 3000));
+      timers.push(setTimeout(function () { setCostume('developer'); }, 5700));
+      timers.push(setTimeout(endIntro, INTRO_TOTAL_MS));
     }
   }
 
