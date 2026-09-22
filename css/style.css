@@ -97,16 +97,30 @@ img { max-width: 100%; display: block; }
 
 .site-nav {
   display: flex;
-  gap: 1.25rem;
+  gap: 1.5rem;
   flex-wrap: wrap;
 }
 
-.site-nav a {
+.nav-btn {
+  font-family: var(--font-pixel);
+  background: none;
+  border: none;
+  cursor: pointer;
   color: var(--ink-muted);
-  font-size: .9rem;
+  font-size: .78rem;
+  padding: .4rem 0;
 }
 
-.site-nav a:hover { color: var(--ink); }
+.nav-btn:hover { color: var(--ink); }
+
+.nav-btn.active {
+  color: var(--gold);
+}
+
+.nav-btn.active::before {
+  content: '▶ ';
+}
+
 
 /* =========================================================
    버튼
