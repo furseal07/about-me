@@ -1,41 +1,516 @@
 @charset "UTF-8";
-* {
-  box-sizing: border-box;
+/* =========================================================
+   토큰 (색상 / 타이포 / 레이아웃)
+   ========================================================= */
+:root {
+  --bg: #1c1b33;
+  --bg-panel: #262547;
+  --bg-panel-alt: #302f58;
+  --border: #100f22;
+  --line: #46426e;
+
+  --ink: #f4f1ff;
+  --ink-muted: #b7b3d9;
+
+  --gold: #ffc857;
+  --mint: #7cdfc0;
+  --rose: #ff8fa3;
+
+  --font-pixel: 'Galmuri11', sans-serif;
+  --font-body: 'Pretendard', -apple-system, 'Malgun Gothic', sans-serif;
+
+  --radius: 0;
+  --max-width: 760px;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 84px;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink-muted);
+  font-family: var(--font-body);
+  line-height: 1.7;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-pixel);
+  color: var(--ink);
+  line-height: 1.5;
+  margin: 0 0 .75rem;
+}
+
+p { margin: 0 0 .75rem; }
+
+a {
+  color: var(--mint);
+  text-decoration: none;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--mint);
+  outline-offset: 3px;
+}
+
+img { max-width: 100%; display: block; }
+
+.section {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+/* =========================================================
+   상단 네비게이션
+   ========================================================= */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: .9rem 1.5rem;
+  background: rgba(28, 27, 51, 0.92);
+  backdrop-filter: blur(4px);
+  border-bottom: 3px solid var(--border);
+}
+
+.logo {
+  font-family: var(--font-pixel);
+  color: var(--gold);
+  font-size: .95rem;
+}
+
+.site-nav {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.site-nav a {
+  color: var(--ink-muted);
+  font-size: .9rem;
+}
+
+.site-nav a:hover { color: var(--ink); }
+
+/* =========================================================
+   버튼
+   ========================================================= */
+.btn {
+  display: inline-block;
+  font-family: var(--font-pixel);
+  font-size: .8rem;
+  padding: .75rem 1.1rem;
+  border: 3px solid var(--border);
+  box-shadow: 4px 4px 0 var(--border);
+  transition: transform .1s ease, box-shadow .1s ease;
+}
+
+.btn:hover,
+.btn:focus-visible {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--border);
+}
+
+.btn-primary {
+  background: var(--gold);
+  color: var(--border);
+}
+
+.btn-mini {
+  background: var(--bg-panel-alt);
+  color: var(--ink);
+  font-size: .7rem;
+  padding: .55rem .8rem;
+}
+
+/* =========================================================
+   히어로 / 대화창(dialogue box)
+   ========================================================= */
+.hero {
+  padding-top: 3.5rem;
+  text-align: center;
+}
+
+.dialogue-box {
+  position: relative;
+  background: var(--bg-panel);
+  border: 3px solid var(--border);
+  box-shadow: 6px 6px 0 var(--border);
+  padding: 2rem 1.75rem;
+  text-align: left;
+}
+
+.dialogue-label {
+  font-family: var(--font-pixel);
+  font-size: .75rem;
+  color: var(--gold);
+  margin-bottom: .75rem;
+}
+
+.dialogue-text {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: var(--ink);
+  margin: 0;
+}
+
+.dialogue-cursor {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1rem;
+  color: var(--mint);
+  animation: blink 1.2s steps(2, jump-none) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialogue-cursor { animation: none; }
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.tag-row {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  justify-content: center;
+  padding: 0;
+  margin: 1.5rem 0;
+}
+
+.hero .tag-row { justify-content: center; }
+#skills .tag-row { justify-content: flex-start; }
+
+.tag {
+  font-family: var(--font-pixel);
+  font-size: .7rem;
+  color: var(--ink);
+  background: var(--bg-panel-alt);
+  border: 2px solid var(--line);
+  padding: .5rem .8rem;
+}
+
+.stat-badges {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 0;
+  margin: 2rem 0 0;
+}
+
+.stat-badges li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .25rem;
+}
+
+.stat-badges strong {
+  font-family: var(--font-pixel);
+  color: var(--gold);
+  font-size: 1rem;
+}
+
+.stat-badges span {
+  font-size: .8rem;
+  color: var(--ink-muted);
+}
+
+/* =========================================================
+   일하는 방식 카드
+   ========================================================= */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+.stat-card {
+  background: var(--bg-panel);
+  border: 3px solid var(--border);
+  box-shadow: 5px 5px 0 var(--border);
+  padding: 1.5rem;
+}
+
+.stat-icon {
+  color: var(--mint);
+  font-size: 1.4rem;
+}
+
+.stat-card h3 {
+  font-size: .95rem;
+  margin: .75rem 0 .5rem;
+}
+
+.stat-card h3 em {
+  font-family: var(--font-body);
+  font-style: normal;
+  color: var(--ink-muted);
+  font-size: .8rem;
+  margin-left: .4rem;
+}
+
+.stat-card p {
+  font-size: .92rem;
+}
+
+.stat-example {
+  color: var(--ink-muted);
+  font-size: .85rem;
+  border-top: 2px dashed var(--line);
+  padding-top: .75rem;
+  margin-top: .75rem;
+}
+
+/* =========================================================
+   타임라인 (경력 / 학력)
+   ========================================================= */
+.timeline {
+  list-style: none;
   margin: 0;
   padding: 0;
 }
 
-body {
-  font-family: -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
-  line-height: 1.6;
-  color: #222;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
+.timeline-item {
+  position: relative;
+  padding: 0 0 2.25rem 2rem;
+  border-left: 3px solid var(--line);
+  margin-left: .4rem;
 }
 
-header {
-  text-align: center;
-  padding: 3rem 0;
+.timeline-item:last-child {
+  border-left-color: transparent;
+  padding-bottom: 0;
 }
 
-section {
-  margin-bottom: 3rem;
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: .3rem;
+  width: 14px;
+  height: 14px;
+  background: var(--mint);
+  border: 3px solid var(--bg);
 }
 
-h2 {
-  border-bottom: 2px solid #333;
-  padding-bottom: 0.5rem;
+.timeline-gold .timeline-item::before { background: var(--gold); }
+
+.timeline-date {
+  font-family: var(--font-pixel);
+  font-size: .7rem;
+  color: var(--ink-muted);
+  margin-bottom: .5rem;
+}
+
+.timeline-item h3 {
+  font-size: 1rem;
+  margin-bottom: .5rem;
+}
+
+.timeline-item h3 span {
+  font-family: var(--font-body);
+  font-size: .85rem;
+  color: var(--ink-muted);
+  font-weight: 400;
+  margin-left: .3rem;
+}
+
+.timeline-item p {
+  font-size: .92rem;
+}
+
+/* =========================================================
+   자격증 카드
+   ========================================================= */
+.item-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.item-card {
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  background: var(--bg-panel);
+  border: 3px solid var(--border);
+  box-shadow: 4px 4px 0 var(--border);
+  padding: 1rem 1.25rem;
+}
+
+.item-icon { font-size: 1.5rem; }
+
+.item-card h3 {
+  font-size: .9rem;
+  margin: 0 0 .3rem;
+}
+
+.item-card p {
+  font-size: .82rem;
+  margin: 0;
+}
+
+/* =========================================================
+   스킬
+   ========================================================= */
+.skill-block { margin-bottom: 2.5rem; }
+
+.skill-block-title {
+  font-size: .85rem;
+  color: var(--mint);
   margin-bottom: 1rem;
 }
 
-a {
-  color: #0066cc;
+.skill-group { margin-bottom: 1.25rem; }
+
+.skill-group-label {
+  font-family: var(--font-pixel);
+  font-size: .68rem;
+  color: var(--ink-muted);
+  margin-bottom: .6rem;
 }
 
-footer {
+.skill-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: .55rem;
+}
+
+.skill-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.skill-name { font-size: .9rem; color: var(--ink); }
+
+.lv-bar {
+  display: inline-flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.lv-bar::before,
+.lv-bar::after,
+.lv-bar span { content: ''; }
+
+.lv-bar {
+  --filled: 0;
+}
+
+.lv-bar[data-lv] {
+  position: relative;
+  width: 62px;
+  height: 14px;
+}
+
+.lv-bar[data-lv]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg,
+      var(--bg-panel-alt) 0 18px, var(--bg) 18px 22px,
+      var(--bg-panel-alt) 22px 40px, var(--bg) 40px 44px,
+      var(--bg-panel-alt) 44px 62px);
+  border: 2px solid var(--line);
+}
+
+.lv-bar[data-lv="1"]::after,
+.lv-bar[data-lv="2"]::after,
+.lv-bar[data-lv="3"]::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  height: 8px;
+  background: var(--mint);
+}
+
+.lv-bar[data-lv="1"]::after { width: 14px; }
+.lv-bar[data-lv="2"]::after { width: 32px; }
+.lv-bar[data-lv="3"]::after { width: 50px; }
+
+.skill-legend {
+  font-size: .78rem;
+  color: var(--ink-muted);
+  margin-top: 1rem;
+}
+
+/* =========================================================
+   포트폴리오 CTA
+   ========================================================= */
+.cta-section { text-align: center; }
+
+.cta-box {
+  background: var(--bg-panel);
+  border: 3px solid var(--border);
+  box-shadow: 6px 6px 0 var(--border);
+  padding: 2.5rem 1.75rem;
+}
+
+.cta-box h2 { font-size: 1.05rem; }
+
+.cta-box p {
+  max-width: 46ch;
+  margin: 0 auto 1.5rem;
+  font-size: .92rem;
+}
+
+/* =========================================================
+   연락
+   ========================================================= */
+.contact-section { text-align: center; }
+.contact-section .dialogue-box { text-align: left; margin-bottom: 1.5rem; }
+
+.contact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* =========================================================
+   푸터
+   ========================================================= */
+.site-footer {
   text-align: center;
-  color: #888;
-  font-size: 0.9rem;
-  padding: 2rem 0;
+  font-family: var(--font-pixel);
+  font-size: .7rem;
+  color: var(--ink-muted);
+  padding: 2.5rem 1.5rem 3rem;
+}
+
+/* =========================================================
+   반응형
+   ========================================================= */
+@media (max-width: 640px) {
+  .site-header { justify-content: center; text-align: center; }
+  .dialogue-text { font-size: 1.05rem; }
+  .section { padding: 3rem 1.25rem; }
 }
