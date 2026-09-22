@@ -43,6 +43,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // 각 아이템 획득 후 해당 의상과 설명을 3초씩 보여줍니다.
   var stageDuration = 3000;
   var pickupLead = 1200;
+  // 첫 안내와 기획·운영·개발을 각각 2초씩 보여줍니다.
+  var stageDuration = 2000;
+  var pickupLead = 2000;
   var pickups = names.map(function (_, index) { return pickupLead + index * stageDuration; });
   var duration = pickups[pickups.length - 1] + stageDuration;
   var playing = false;

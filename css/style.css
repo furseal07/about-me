@@ -703,17 +703,10 @@ img { max-width: 100%; display: block; }
 .intro-progress span.is-collected::before { content: '✓'; }
 .intro-caption {
   margin: 0;
-  max-width: min(100%, 38rem);
-  min-height: 3.4em;
-  font-family: var(--font-body);
   font-size: clamp(1.125rem, 2.2vw, 1.375rem);
-  font-weight: 600;
-  line-height: 1.7;
-  color: var(--ink);
+  color: var(--ink-muted);
+  min-height: 1.7em;
   text-align: center;
-  word-break: keep-all;
-  overflow-wrap: break-word;
-  text-wrap: balance;
 }
 .intro-replay { cursor: pointer; margin-top: .75rem; font-size: .7rem; }
 html { scrollbar-gutter: stable; }
@@ -732,7 +725,6 @@ main:focus { outline: none; }
   .intro-heading { align-self: flex-start; text-align: left; padding-left: 1rem; padding-right: 8rem; }
   .intro-eyebrow { margin-bottom: .15rem; font-size: 1rem; }
   .intro-title { font-size: 1.125rem; }
-  .intro-caption { min-height: 1.7em; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
