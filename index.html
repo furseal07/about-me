@@ -13,9 +13,47 @@
 </head>
 <body>
 
+  <!-- ===== 인트로: 캐릭터가 아이템 먹고 장비 착용 ===== -->
+  <div id="intro" class="intro">
+    <p class="sr-only">사이트를 불러오는 중입니다. 건너뛰려면 Skip 버튼을 누르세요.</p>
+    <button type="button" id="introSkip" class="btn btn-mini intro-skip">SKIP ▶</button>
+
+    <div class="intro-stage" aria-hidden="true">
+      <div class="intro-ground"></div>
+
+      <div class="pixel-char" id="pixelChar">
+        <span class="char-hat"></span>
+        <span class="char-head"></span>
+        <span class="char-body"></span>
+        <span class="char-pack"></span>
+        <span class="char-laptop"></span>
+        <span class="char-leg char-leg-l"></span>
+        <span class="char-leg char-leg-r"></span>
+      </div>
+
+      <div class="intro-item intro-item-1">
+        <span class="item-icon">📋</span>
+        <span class="item-label">기획</span>
+        <span class="item-popup">+ 기획</span>
+      </div>
+      <div class="intro-item intro-item-2">
+        <span class="item-icon">⚙️</span>
+        <span class="item-label">운영</span>
+        <span class="item-popup">+ 운영</span>
+      </div>
+      <div class="intro-item intro-item-3">
+        <span class="item-icon">💻</span>
+        <span class="item-label">개발</span>
+        <span class="item-popup">+ 개발</span>
+      </div>
+    </div>
+
+    <p class="intro-caption" aria-hidden="true">LOADING<span class="intro-dots">...</span></p>
+  </div>
+
   <!-- ===== 상단 고정 네비게이션 (탭 메뉴) ===== -->
   <header class="site-header">
-    <span class="logo">JADE</span>
+    <span class="logo">SH</span>
     <nav class="site-nav" aria-label="주요 메뉴">
       <button type="button" class="nav-btn" data-target="home">소개</button>
       <button type="button" class="nav-btn" data-target="career">경력·학력</button>
@@ -34,7 +72,7 @@
 
       <section class="section hero">
         <div class="dialogue-box">
-          <p class="dialogue-label">JADE</p>
+          <p class="dialogue-label">엄상희</p>
           <h1 class="dialogue-text">궁금한 건 끝까지 배우는 사람,<br>기획·운영·개발을 넘나들며 문제를 해결합니다.</h1>
           <span class="dialogue-cursor" aria-hidden="true">▼</span>
         </div>
