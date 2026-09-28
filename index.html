@@ -17,13 +17,19 @@
   <!-- 인트로는 이미지 로딩 완료 후 하나의 타임라인으로 재생합니다. -->
   <div id="intro" class="intro" hidden role="dialog" aria-modal="true" aria-labelledby="introTitle">
     <button type="button" id="introSkip" class="btn btn-mini intro-skip">건너뛰기 <span aria-hidden="true">→</span></button>
+    <div class="intro-scene">
     <div class="intro-heading">
-      <p class="intro-eyebrow">엄상희 · 칭호</p>
+      <p class="intro-eyebrow">엄상희 · LV. 28</p>
       <p id="introTitle" class="intro-title">자기 개발자</p>
     </div>
     <div class="intro-stage" aria-hidden="true">
+      <div class="sky-haze"></div>
+      <div class="sky-stars"></div>
+      <div class="sky-moon"></div>
       <div class="city-far"></div>
       <div class="city-near"></div>
+      <div class="intro-floor"></div>
+      <div class="actor-aura"></div>
       <div class="intro-ground"></div>
       <div class="pixel-char" id="pixelChar">
         <div class="char-shadow"></div>
@@ -44,9 +50,13 @@
       </div>
       <span class="pickup-ring"></span>
       <span class="pickup-text"></span>
+      <div class="pickup-sparks"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
     </div>
-    <div class="intro-progress" aria-hidden="true"><span>기획</span><span>운영</span><span>개발</span></div>
+    <div class="intro-status">
+    <div class="intro-progress" aria-hidden="true"><span data-step="01">기획</span><span data-step="02">운영</span><span data-step="03">개발</span></div>
     <p class="intro-caption" aria-live="polite">기획에서 운영으로, 그리고 개발까지.</p>
+    </div>
+    </div>
   </div>
 
   <!-- ===== 상단 고정 네비게이션 (탭 메뉴) ===== -->
@@ -69,27 +79,84 @@
     <div class="tab-panel" data-panel="home">
 
       <section class="section hero">
-        <div class="dialogue-box">
-          <p class="dialogue-label">엄상희</p>
-          <h1 class="dialogue-text">궁금한 건 끝까지 배우는 사람,<br>기획·운영·개발을 넘나들며 문제를 해결합니다.</h1>
-          <span class="dialogue-cursor" aria-hidden="true">▼</span>
+        <div class="hero-layout">
+          <button type="button" class="hero-portrait" id="heroPortrait" aria-label="엄상희 캐릭터 — 누르면 꺄르르 웃어요">
+            <span class="portrait-backdrop" aria-hidden="true"></span>
+            <svg class="portrait-art" viewBox="180 160 960 1000" aria-hidden="true" focusable="false">
+              <defs>
+                <clipPath id="portraitBodyClip" clipPathUnits="userSpaceOnUse">
+                  <path clip-rule="evenodd" d="M0 744H1254V1254H0Z M900 752H1076V888L1024 942H948L920 914L900 858Z"/>
+                </clipPath>
+                <clipPath id="portraitHandClip" clipPathUnits="userSpaceOnUse">
+                  <path d="M900 752H1076V888L1024 942H948L920 914L900 858Z"/>
+                </clipPath>
+                <clipPath id="portraitHeadClip"><rect width="1254" height="754"/></clipPath>
+                <clipPath id="portraitEyesClip">
+                  <path d="M480 526H580V630H480Z M678 526H780V630H678Z"/>
+                </clipPath>
+                <clipPath id="portraitLaughClip">
+                  <path d="M480 526H580V630H480Z M678 526H780V630H678Z M566 634H696V732H566Z"/>
+                </clipPath>
+              </defs>
+              <g class="portrait-sway">
+                <g class="portrait-breathe">
+                  <g class="portrait-reaction">
+                    <image href="assets/character-wave.png" width="1254" height="1254" clip-path="url(#portraitBodyClip)"/>
+                    <g class="portrait-head-motion">
+                      <image href="assets/character-wave.png" width="1254" height="1254" clip-path="url(#portraitHeadClip)"/>
+                      <image class="portrait-blink-face" href="assets/character-blink.png" width="1254" height="1254" clip-path="url(#portraitEyesClip)"/>
+                      <image class="portrait-laugh-face" href="assets/character-laugh.png" width="1254" height="1254" clip-path="url(#portraitLaughClip)"/>
+                    </g>
+                    <g class="portrait-wave-hand">
+                      <image href="assets/character-wave.png" width="1254" height="1254" clip-path="url(#portraitHandClip)"/>
+                    </g>
+                  </g>
+                </g>
+              </g>
+            </svg>
+            <span class="portrait-reaction-note" aria-hidden="true">꺄르르!</span>
+            <span class="portrait-tap-hint" aria-hidden="true">Click!</span>
+            <span class="sr-only" id="portraitStatus" role="status"></span>
+          </button>
+          <div class="hero-copy">
+            <div class="dialogue-box hero-dialogue">
+              <p class="dialogue-label">엄상희 <span>· LV. 28</span></p>
+              <button type="button" class="hero-dialogue-toggle" id="heroDialogueToggle" aria-label="Click! 캐릭터 정보 전환" aria-expanded="false" aria-controls="heroCharacterDetails" hidden>
+                <span class="hero-dialogue-hint" aria-hidden="true"><span>Click!</span><span class="dialogue-switch-icon">▼</span></span>
+              </button>
+              <div class="hero-dialogue-content">
+                <h1 class="dialogue-text" id="heroDialogue">
+                  <span class="sr-only">안녕하세요! 안주하지 않고 끊임없이 LEVEL UP 하는 캐릭터 엄상희입니다.</span>
+                  <span class="dialogue-lines" aria-hidden="true"><span class="dialogue-line">안녕하세요!</span><span class="dialogue-line">안주하지 않고 끊임없이 LEVEL UP 하는 캐릭터 엄상희입니다.</span></span>
+                </h1>
+                <dl class="character-details" id="heroCharacterDetails" aria-hidden="true" inert>
+                  <div><dt>속성 :</dt><dd class="character-water">물 💧</dd></div>
+                  <div><dt>칭호 :</dt><dd>자기 개발자 🚀</dd></div>
+                  <div><dt>성격 :</dt><dd>호기심이 많아 계속해서 무언가를 배움. 📚</dd></div>
+                  <div><dt>취미 :</dt><dd>게임 &amp; 수영 🎮 🏊</dd></div>
+                  <div><dt>특징 :</dt><dd>기획·운영·개발 경험이 있음 🧩</dd></div>
+                </dl>
+              </div>
+            </div>
+
+            <ul class="tag-row" aria-label="경험 분야">
+              <li class="tag">기획</li>
+              <li class="tag">운영</li>
+              <li class="tag">개발</li>
+            </ul>
+
+            <ul class="stat-badges">
+              <li><strong>4년+</strong><span>실무 경력</span></li>
+              <li><strong>1,120h</strong><span>개발 교육</span></li>
+              <li><strong>3건</strong><span>팀 프로젝트</span></li>
+            </ul>
+          </div>
         </div>
-
-        <ul class="tag-row" aria-label="경험 분야">
-          <li class="tag">기획</li>
-          <li class="tag">운영</li>
-          <li class="tag">개발</li>
-        </ul>
-
-        <ul class="stat-badges">
-          <li><strong>4년+</strong><span>실무 경력</span></li>
-          <li><strong>1,120h</strong><span>개발 교육</span></li>
-          <li><strong>3건</strong><span>팀 프로젝트</span></li>
-        </ul>
+        <a class="hero-scroll" href="#work-values"><span>일할 때 중요하게 생각하는 것</span><span class="scroll-arrow" aria-hidden="true">↓</span></a>
       </section>
 
-      <section class="section">
-        <h2 class="section-title">일할 때 중요하게 생각하는 것</h2>
+      <section class="section work-values" id="work-values" aria-labelledby="workValuesTitle">
+        <h2 class="section-title" id="workValuesTitle">일할 때 중요하게 생각하는 것</h2>
         <div class="card-grid">
 
           <article class="stat-card">
