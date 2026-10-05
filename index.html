@@ -82,40 +82,27 @@
         <div class="hero-layout">
           <button type="button" class="hero-portrait" id="heroPortrait" aria-label="엄상희 캐릭터 — 누르면 꺄르르 웃어요">
             <span class="portrait-backdrop" aria-hidden="true"></span>
-            <svg class="portrait-art" viewBox="180 160 960 1000" aria-hidden="true" focusable="false">
+            <!-- 프로필 표시 영역은 하나만 사용합니다. 이전 SVG를 중첩하지 않습니다. -->
+            <svg class="portrait-art" viewBox="180 160 1000 1000" aria-hidden="true" focusable="false">
               <defs>
-                <clipPath id="portraitBodyClip" clipPathUnits="userSpaceOnUse">
-                  <path clip-rule="evenodd" d="M0 744H1254V1254H0Z M900 752H1076V888L1024 942H948L920 914L900 858Z"/>
+                <clipPath id="portraitFrameClip" clipPathUnits="userSpaceOnUse">
+                  <rect x="180" y="160" width="1000" height="1000"/>
                 </clipPath>
-                <clipPath id="portraitHandClip" clipPathUnits="userSpaceOnUse">
-                  <path d="M900 752H1076V888L1024 942H948L920 914L900 858Z"/>
-                </clipPath>
-                <clipPath id="portraitHeadClip"><rect width="1254" height="754"/></clipPath>
-                <clipPath id="portraitEyesClip">
-                  <path d="M480 526H580V630H480Z M678 526H780V630H678Z"/>
-                </clipPath>
-                <clipPath id="portraitLaughClip">
+                <clipPath id="portraitEmotionClip" clipPathUnits="userSpaceOnUse">
                   <path d="M480 526H580V630H480Z M678 526H780V630H678Z M566 634H696V732H566Z"/>
                 </clipPath>
               </defs>
-              <g class="portrait-sway">
-                <g class="portrait-breathe">
-                  <g class="portrait-reaction">
-                    <image href="assets/character-wave.png" width="1254" height="1254" clip-path="url(#portraitBodyClip)"/>
-                    <g class="portrait-head-motion">
-                      <image href="assets/character-wave.png" width="1254" height="1254" clip-path="url(#portraitHeadClip)"/>
-                      <image class="portrait-blink-face" href="assets/character-blink.png" width="1254" height="1254" clip-path="url(#portraitEyesClip)"/>
-                      <image class="portrait-laugh-face" href="assets/character-laugh.png" width="1254" height="1254" clip-path="url(#portraitLaughClip)"/>
-                    </g>
-                    <g class="portrait-wave-hand">
-                      <image href="assets/character-wave.png" width="1254" height="1254" clip-path="url(#portraitHandClip)"/>
-                    </g>
-                  </g>
-                </g>
+              <image class="portrait-fallback" href="assets/character-wave.png" width="1254" height="1254"/>
+              <g id="portraitPose">
+                <image class="portrait-frame" id="portraitFrame" href="assets/character-portrait-frames.png" x="180" y="160" width="6000" height="1000" clip-path="url(#portraitFrameClip)"/>
+                <image class="portrait-emotion" id="portraitEmotion" href="assets/character-portrait-frames.png" x="-3820" y="160" width="6000" height="1000" clip-path="url(#portraitEmotionClip)"/>
+              </g>
+              <g class="portrait-laugh-sparks">
+                <path class="portrait-spark-left" fill="#ffc857" d="M290 350h14v-14h14v14h14v14h-14v14h-14v-14h-14Z M270 397h12v12h-12Z"/>
+                <path class="portrait-spark-right" fill="#7cdfc0" d="M1030 405h14v-14h14v14h14v14h-14v14h-14v-14h-14Z M1080 366h12v12h-12Z"/>
               </g>
             </svg>
             <span class="portrait-reaction-note" aria-hidden="true">꺄르르!</span>
-            <span class="portrait-tap-hint" aria-hidden="true">Click!</span>
             <span class="sr-only" id="portraitStatus" role="status"></span>
           </button>
           <div class="hero-copy">
@@ -139,17 +126,51 @@
               </div>
             </div>
 
-            <ul class="tag-row" aria-label="경험 분야">
-              <li class="tag">기획</li>
-              <li class="tag">운영</li>
-              <li class="tag">개발</li>
-            </ul>
+            <!-- 경험 분야 메뉴 + 상태창: 메뉴에서 분야를 고르면 상태창의 내용이 바뀝니다.
+                 상태창의 각 칸은 항목 이름(em) → 큰 글자(strong) → 설명(span) 순서입니다.
+                 큰 글자 자리에 숫자 대신 긴 문구를 넣을 때는 strong 에 class="stat-phrase" 를 붙입니다.
+                 내용을 고치려면 data-stats 가 같은 <ul> 안의 글자만 수정하면 됩니다. -->
+            <div class="role-status" id="roleStatus" data-role="all">
+              <div class="role-menu">
+                <p class="role-menu-title">경험 분야</p>
+                <div class="role-tabs" role="group" aria-label="경험 분야 — 고르면 상태창의 내용이 바뀝니다">
+                  <button type="button" class="role-tab" data-role="all" aria-pressed="true"><span class="role-icon" aria-hidden="true"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="4" y="4" width="7" height="7"/><rect x="15" y="4" width="7" height="7"/><rect x="4" y="15" width="7" height="7"/><rect x="15" y="15" width="7" height="7"/></svg></span><span class="role-name">전체</span></button>
+                  <button type="button" class="role-tab" data-role="plan" aria-pressed="false"><span class="role-icon" aria-hidden="true"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="6" y="5" width="14" height="17" rx="1"/><path d="M10 5V2h6v3M10 10h6M10 14h6M10 18h4"/></svg></span><span class="role-name">기획</span></button>
+                  <button type="button" class="role-tab" data-role="ops" aria-pressed="false"><span class="role-icon" aria-hidden="true"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M9 3h6l1 4 4 1 2 5-3 3v4l-5 2-3-3H7l-4-5 3-4V6z"/><circle cx="12" cy="12" r="3"/></svg></span><span class="role-name">운영</span></button>
+                  <button type="button" class="role-tab" data-role="dev" aria-pressed="false"><span class="role-icon" aria-hidden="true"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="4" y="4" width="18" height="13" rx="1"/><path d="M1 21h24M10 8l-3 3 3 3M16 8l3 3-3 3"/></svg></span><span class="role-name">개발</span></button>
+                </div>
+                <p class="role-hint" aria-hidden="true">분야를 골라 보세요</p>
+              </div>
 
-            <ul class="stat-badges">
-              <li><strong>4년+</strong><span>실무 경력</span></li>
-              <li><strong>1,120h</strong><span>개발 교육</span></li>
-              <li><strong>3건</strong><span>팀 프로젝트</span></li>
-            </ul>
+              <div class="role-panel">
+                <p class="role-caption">
+                  <span class="role-caption-title" id="roleCaption">전체 요약</span>
+                </p>
+                <div class="role-stats">
+                  <ul class="stat-badges is-active" data-stats="all" data-title="전체 요약">
+                    <li><em class="stat-kind">업무 경력</em><strong>5년+</strong><span>기획·운영 전체 합산</span></li>
+                    <li><em class="stat-kind">교육</em><strong>1,120h</strong><span>Java 풀스택 개발 과정</span></li>
+                    <li><em class="stat-kind">프로젝트</em><strong>3건</strong><span>팀 개발 프로젝트</span></li>
+                  </ul>
+                  <ul class="stat-badges" data-stats="plan" data-title="기획 경험">
+                    <li><em class="stat-kind">경력</em><strong>1년+</strong><span>콘텐츠·공연 기획</span></li>
+                    <li><em class="stat-kind">옥외 광고</em><strong class="stat-phrase">자사 캐릭터 광고 기획·&#8288;집행</strong><span>지하철 전광판</span></li>
+                    <li><em class="stat-kind">글로벌</em><strong class="stat-phrase">해외 커뮤니티 제휴로 웹툰 배포</strong><span>다국적 채널</span></li>
+                  </ul>
+                  <ul class="stat-badges" data-stats="ops" data-title="운영 경험">
+                    <li><em class="stat-kind">경력</em><strong>4년+</strong><span>데이터 운영 실무</span></li>
+                    <li><em class="stat-kind">처리량</em><strong>3,000~<wbr>5,500건+</strong><span>일평균 데이터 정제</span></li>
+                    <li><em class="stat-kind">성과</em><strong>+3%</strong><span>추천 탭 구매전환율 증가</span></li>
+                  </ul>
+                  <ul class="stat-badges" data-stats="dev" data-title="개발 경험">
+                    <li><em class="stat-kind">교육</em><strong>1,120h</strong><span>개발 교육 수료</span></li>
+                    <li><em class="stat-kind">프로젝트</em><strong>3건</strong><span>팀 개발 프로젝트</span></li>
+                    <li><em class="stat-kind">자격증</em><strong>정보처리<wbr>기사</strong><span>필기 합격</span></li>
+                  </ul>
+                </div>
+              </div>
+              <span class="sr-only" id="roleAnnounce" role="status"></span>
+            </div>
           </div>
         </div>
         <a class="hero-scroll" href="#work-values"><span>일할 때 중요하게 생각하는 것</span><span class="scroll-arrow" aria-hidden="true">↓</span></a>

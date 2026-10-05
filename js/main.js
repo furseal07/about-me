@@ -16,69 +16,90 @@ document.addEventListener('DOMContentLoaded', function () {
   var heroPortrait = document.querySelector('.hero-portrait');
   var heroPortraitInView = true;
   var portraitStatus = document.getElementById('portraitStatus');
-  var portraitBlinkTimer = 0;
-  var portraitBlinkEnd = 0;
+  var portraitFrame = document.getElementById('portraitFrame');
+  var portraitPose = document.getElementById('portraitPose');
+  var portraitEmotion = document.getElementById('portraitEmotion');
+  var portraitFrameTimer = 0;
   var portraitLaughTimer = 0;
-  var portraitBlinkIndex = 0;
-  var portraitFaces = { blink: false, laugh: false };
+  var portraitReady = false;
+  var portraitSequence = '';
+  // [sprite index, hold in milliseconds]. Changes happen only at frame boundaries.
+  var portraitIdleFrames = [[0, 1500], [1, 150], [0, 100], [2, 150], [0, 100], [1, 150], [0, 100], [2, 150], [0, 1900], [3, 140], [0, 2400]];
+  // Laugh steps: [arm pose, hold, vertical pixel offset, facial expression, sparkle beat].
+  var portraitLaughFrames = [[0, 100, 0, 5, 0], [1, 140, -12, 4, 1], [2, 140, -24, 4, 2], [1, 120, -12, 5, 1], [0, 180, 0, 4, 0], [1, 140, -12, 4, 1], [2, 140, -24, 4, 2], [1, 120, -12, 5, 1], [0, 220, 0, 4, 0], [1, 140, -12, 4, 1], [2, 140, -24, 4, 2], [1, 140, -12, 5, 1], [0, 220, 0, 4, 0], [0, 260, 0, 5, 0]];
+  var portraitLaughDuration = portraitLaughFrames.reduce(function (total, frame) { return total + frame[1]; }, 0);
 
-  function clearPortraitBlink() {
-    clearTimeout(portraitBlinkTimer);
-    clearTimeout(portraitBlinkEnd);
-    portraitBlinkTimer = portraitBlinkEnd = 0;
-    if (heroPortrait) heroPortrait.classList.remove('is-blinking');
+  function setPortraitFrame(index, lift, expression, beat) {
+    if (!portraitFrame) return;
+    portraitFrame.setAttribute('x', String(180 - index * 1000));
+    if (portraitPose) portraitPose.setAttribute('transform', 'translate(0 ' + (lift || 0) + ')');
+    if (portraitEmotion) portraitEmotion.setAttribute('x', String(180 - (expression === undefined ? 4 : expression) * 1000));
+    heroPortrait.dataset.frame = String(index);
+    heroPortrait.dataset.beat = String(beat || 0);
+  }
+  function stopPortraitFrames() {
+    clearTimeout(portraitFrameTimer);
+    portraitFrameTimer = 0;
+    portraitSequence = '';
   }
   function endPortraitLaugh() {
     clearTimeout(portraitLaughTimer);
     portraitLaughTimer = 0;
+    stopPortraitFrames();
     if (heroPortrait) heroPortrait.classList.remove('is-laughing');
     if (portraitStatus) portraitStatus.textContent = '';
+    setPortraitFrame(0);
   }
-  function schedulePortraitBlink() {
-    if (!heroPortrait || !portraitFaces.blink || portraitBlinkTimer || portraitBlinkEnd ||
-        !heroPortrait.classList.contains('is-animated') || heroPortrait.classList.contains('is-laughing')) return;
-    // Uneven intervals keep the idle expression from looking like a repeating metronome.
-    var intervals = [3600, 5200, 4200, 6100];
-    portraitBlinkTimer = setTimeout(function () {
-      portraitBlinkTimer = 0;
-      heroPortrait.classList.add('is-blinking');
-      portraitBlinkEnd = setTimeout(function () {
-        portraitBlinkEnd = 0;
-        heroPortrait.classList.remove('is-blinking');
-        schedulePortraitBlink();
-      }, 150);
-    }, intervals[portraitBlinkIndex++ % intervals.length]);
+  function playPortraitFrames(name) {
+    if (portraitSequence === name && portraitFrameTimer) return;
+    stopPortraitFrames();
+    portraitSequence = name;
+    var frames = name === 'laugh' ? portraitLaughFrames : portraitIdleFrames;
+    var index = 0;
+    function nextFrame() {
+      portraitFrameTimer = 0;
+      if (!heroIsVisible() || !heroPortraitInView || motionPreference.matches) { syncHeroMotion(); return; }
+      var frame = frames[index];
+      setPortraitFrame(frame[0], frame[2], frame[3], frame[4]);
+      index = (index + 1) % frames.length;
+      portraitFrameTimer = setTimeout(nextFrame, frame[1]);
+    }
+    nextFrame();
   }
   function syncHeroMotion() {
     if (!heroPortrait) return;
     var visible = heroIsVisible() && heroPortraitInView;
-    var animated = visible && !motionPreference.matches;
+    var animated = visible && portraitReady && !motionPreference.matches;
     heroPortrait.classList.toggle('is-animated', animated);
-    if (!visible) endPortraitLaugh();
-    if (animated) schedulePortraitBlink();
-    else clearPortraitBlink();
+    if (!visible || !portraitReady) { endPortraitLaugh(); return; }
+    var laughing = heroPortrait.classList.contains('is-laughing');
+    if (animated) playPortraitFrames(laughing ? 'laugh' : 'idle');
+    else { stopPortraitFrames(); setPortraitFrame(laughing ? 4 : 0); }
   }
-  if (heroPortrait) {
-    // Wait for the expression asset so a click never displays a missing frame.
+  if (heroPortrait && portraitFrame) {
+    // Preload one atlas so every pose switches instantly, including the first click.
     heroPortrait.disabled = true;
-    ['blink', 'laugh'].forEach(function (expression) {
-      var face = new Image();
-      face.onload = function () {
-        portraitFaces[expression] = true;
-        if (expression === 'laugh') heroPortrait.disabled = false;
-        syncHeroMotion();
-      };
-      face.src = 'assets/character-' + expression + '.png';
-    });
+    var portraitAtlas = new Image();
+    function readyPortraitAtlas() {
+      portraitReady = true;
+      heroPortrait.classList.add('is-sprite-ready');
+      heroPortrait.disabled = false;
+      syncHeroMotion();
+    }
+    portraitAtlas.onload = function () {
+      if (portraitAtlas.decode) portraitAtlas.decode().then(readyPortraitAtlas, function () {});
+      else readyPortraitAtlas();
+    };
+    portraitAtlas.src = 'assets/character-portrait-frames.png';
     heroPortrait.addEventListener('click', function () {
-      if (!portraitFaces.laugh || !heroIsVisible() || heroPortrait.classList.contains('is-laughing')) return;
-      clearPortraitBlink();
+      if (!portraitReady || !heroIsVisible() || heroPortrait.classList.contains('is-laughing')) return;
       heroPortrait.classList.add('is-laughing');
       if (portraitStatus) portraitStatus.textContent = '엄상희가 꺄르르 웃습니다.';
       portraitLaughTimer = setTimeout(function () {
         endPortraitLaugh();
         syncHeroMotion();
-      }, 2200);
+      }, portraitLaughDuration);
+      syncHeroMotion();
     });
   }
   if (heroPortrait && 'IntersectionObserver' in window) {
@@ -92,7 +113,73 @@ document.addEventListener('DOMContentLoaded', function () {
   var heroDetails = document.getElementById('heroCharacterDetails');
   var heroToggle = document.getElementById('heroDialogueToggle');
   var heroTimer = 0;
+  var heroSummary = document.querySelector('.hero');
+  // 분야 메뉴 → 상태창 → 전체 요약 수치 순서로 하나씩 나타납니다.
+  var heroSummaryItems = Array.from(document.querySelectorAll('.hero .role-menu, .hero .role-tab, .hero .role-panel, .hero .stat-badges[data-stats="all"] > li'));
+  var heroSummaryTimer = 0;
+  var heroSummaryIndex = 0;
+  var heroSummaryStarted = false;
   var heroSegmenter = typeof Intl.Segmenter === 'function' ? new Intl.Segmenter('ko', { granularity: 'grapheme' }) : null;
+
+  if (heroSummary) {
+    heroSummary.classList.add('is-summary-prepared');
+    heroSummaryItems.forEach(function (item) {
+      item.classList.add('hero-summary-item');
+      item.setAttribute('aria-hidden', 'true');
+    });
+  }
+  function revealHeroSummaryItem() {
+    heroSummaryTimer = 0;
+    if (!heroIsVisible()) return;
+    var item = heroSummaryItems[heroSummaryIndex++];
+    if (item) { item.classList.add('is-revealed'); item.removeAttribute('aria-hidden'); }
+    if (heroSummaryIndex < heroSummaryItems.length) {
+      heroSummaryTimer = setTimeout(revealHeroSummaryItem, 130);
+    }
+  }
+  function syncHeroSummary() {
+    clearTimeout(heroSummaryTimer);
+    heroSummaryTimer = 0;
+    if (!heroSummaryStarted || heroSummaryIndex >= heroSummaryItems.length) return;
+    if (motionPreference.matches) {
+      heroSummaryItems.forEach(function (item) { item.classList.add('is-revealed'); item.removeAttribute('aria-hidden'); });
+      heroSummaryIndex = heroSummaryItems.length;
+      return;
+    }
+    if (heroIsVisible()) heroSummaryTimer = setTimeout(revealHeroSummaryItem, 180);
+  }
+
+  // 경험 분야 메뉴: 고른 분야(전체·기획·운영·개발)의 수치를 상태창에 보여줍니다.
+  var roleStatus = document.getElementById('roleStatus');
+  if (roleStatus) {
+    var roleTabs = Array.from(roleStatus.querySelectorAll('.role-tab'));
+    var roleLists = Array.from(roleStatus.querySelectorAll('.stat-badges[data-stats]'));
+    var roleCaption = document.getElementById('roleCaption');
+    var roleAnnounce = document.getElementById('roleAnnounce');
+    var showRoleStats = function (role) {
+      if (roleStatus.dataset.role === role) return;
+      roleStatus.dataset.role = role;
+      roleTabs.forEach(function (tab) { tab.setAttribute('aria-pressed', String(tab.dataset.role === role)); });
+      roleLists.forEach(function (list) {
+        var active = list.dataset.stats === role;
+        list.classList.remove('is-switching');
+        list.classList.toggle('is-active', active);
+        if (!active) return;
+        if (roleCaption) roleCaption.textContent = list.dataset.title;
+        if (roleAnnounce) {
+          roleAnnounce.textContent = list.dataset.title + ': ' + Array.from(list.children, function (item) {
+            return item.querySelector('em').textContent + ' ' + item.querySelector('strong').textContent + ', ' + item.querySelector('span').textContent;
+          }).join(' / ');
+        }
+        if (motionPreference.matches) return;
+        void list.offsetWidth; // 같은 애니메이션을 다시 재생하기 위한 리플로우
+        list.classList.add('is-switching');
+      });
+    };
+    roleTabs.forEach(function (tab) {
+      tab.addEventListener('click', function () { showRoleStats(tab.dataset.role); });
+    });
+  }
 
   function createHeroWriter(groups, accessible, delay, rowPause) {
     var writer = { glyphs: [], index: 0, caret: null, complete: false, delay: delay, rowPause: rowPause };
@@ -162,6 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
     writer.index = writer.glyphs.length;
     writer.complete = true;
     if (heroDialogue) heroDialogue.classList.add('is-complete');
+    if (!heroSummaryStarted) { heroSummaryStarted = true; syncHeroSummary(); }
   }
   function heroIsVisible() {
     return heroHome && !heroHome.hidden && !document.hidden && !document.body.classList.contains('intro-active');
@@ -181,6 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   function syncHeroTyping() {
     syncHeroMotion();
+    syncHeroSummary();
     clearTimeout(heroTimer);
     if (!heroDialogue || !activeHeroWriter || activeHeroWriter.complete) return;
     if (motionPreference.matches) { finishHeroTyping(); return; }
