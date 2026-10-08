@@ -82,8 +82,9 @@
         <div class="hero-layout">
           <button type="button" class="hero-portrait" id="heroPortrait" aria-label="엄상희 캐릭터 — 누르면 꺄르르 웃어요">
             <span class="portrait-backdrop" aria-hidden="true"></span>
-            <!-- 프로필 표시 영역은 하나만 사용합니다. 이전 SVG를 중첩하지 않습니다. -->
-            <svg class="portrait-art" viewBox="180 160 1000 1000" aria-hidden="true" focusable="false">
+            <!-- 프로필 표시 영역은 하나만 사용합니다. 이전 SVG를 중첩하지 않습니다.
+                 viewBox 는 캐릭터가 칸의 가로 중앙에 오고 몸 아래쪽이 칸 바닥에 닿도록 맞춘 값입니다. -->
+            <svg class="portrait-art" viewBox="153 124 1000 1000" aria-hidden="true" focusable="false">
               <defs>
                 <clipPath id="portraitFrameClip" clipPathUnits="userSpaceOnUse">
                   <rect x="180" y="160" width="1000" height="1000"/>
@@ -102,7 +103,6 @@
                 <path class="portrait-spark-right" fill="#7cdfc0" d="M1030 405h14v-14h14v14h14v14h-14v14h-14v-14h-14Z M1080 366h12v12h-12Z"/>
               </g>
             </svg>
-            <span class="portrait-reaction-note" aria-hidden="true">꺄르르!</span>
             <span class="sr-only" id="portraitStatus" role="status"></span>
           </button>
           <div class="hero-copy">
@@ -133,13 +133,13 @@
             <div class="role-status" id="roleStatus" data-role="all">
               <div class="role-menu">
                 <p class="role-menu-title">경험 분야</p>
+                <p class="role-hint" aria-hidden="true">분야를 골라 보세요</p>
                 <div class="role-tabs" role="group" aria-label="경험 분야 — 고르면 상태창의 내용이 바뀝니다">
                   <button type="button" class="role-tab" data-role="all" aria-pressed="true"><span class="role-icon" aria-hidden="true"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="4" y="4" width="7" height="7"/><rect x="15" y="4" width="7" height="7"/><rect x="4" y="15" width="7" height="7"/><rect x="15" y="15" width="7" height="7"/></svg></span><span class="role-name">전체</span></button>
                   <button type="button" class="role-tab" data-role="plan" aria-pressed="false"><span class="role-icon" aria-hidden="true"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="6" y="5" width="14" height="17" rx="1"/><path d="M10 5V2h6v3M10 10h6M10 14h6M10 18h4"/></svg></span><span class="role-name">기획</span></button>
                   <button type="button" class="role-tab" data-role="ops" aria-pressed="false"><span class="role-icon" aria-hidden="true"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M9 3h6l1 4 4 1 2 5-3 3v4l-5 2-3-3H7l-4-5 3-4V6z"/><circle cx="12" cy="12" r="3"/></svg></span><span class="role-name">운영</span></button>
                   <button type="button" class="role-tab" data-role="dev" aria-pressed="false"><span class="role-icon" aria-hidden="true"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="4" y="4" width="18" height="13" rx="1"/><path d="M1 21h24M10 8l-3 3 3 3M16 8l3 3-3 3"/></svg></span><span class="role-name">개발</span></button>
                 </div>
-                <p class="role-hint" aria-hidden="true">분야를 골라 보세요</p>
               </div>
 
               <div class="role-panel">
@@ -160,7 +160,7 @@
                   <ul class="stat-badges" data-stats="ops" data-title="운영 경험">
                     <li><em class="stat-kind">경력</em><strong>4년+</strong><span>데이터 운영 실무</span></li>
                     <li><em class="stat-kind">처리량</em><strong>3,000~<wbr>5,500건+</strong><span>일평균 데이터 정제</span></li>
-                    <li><em class="stat-kind">성과</em><strong>+3%</strong><span>추천 탭 구매전환율 증가</span></li>
+                    <li><em class="stat-kind">성과</em><strong>+3%</strong><span>추천 탭 제작에 기여, 구매전환율 증가</span></li>
                   </ul>
                   <ul class="stat-badges" data-stats="dev" data-title="개발 경험">
                     <li><em class="stat-kind">교육</em><strong>1,120h</strong><span>개발 교육 수료</span></li>
@@ -173,34 +173,94 @@
             </div>
           </div>
         </div>
-        <a class="hero-scroll" href="#work-values"><span>일할 때 중요하게 생각하는 것</span><span class="scroll-arrow" aria-hidden="true">↓</span></a>
+        <a class="hero-scroll" href="#work-values"><span>업무 전략</span><span class="scroll-arrow" aria-hidden="true">↓</span></a>
       </section>
 
+      <!-- 업무 전략: 게임 카드 세 장이 떠 있는 회전 카드입니다. 가운데 카드가 지금 보는 전략이고, 양옆 카드는 패처럼 비스듬히 뒤에 떠 있습니다.
+           카드 한 장 = 보석 번호 + 이름 띠 → 그림 칸 → 종류 줄(전략 · 키워드) → 효과 칸(문장 두 개) → 세트 이름·번호.
+           ◀ ▶ 버튼, 아래 번호 버튼, 좌우로 밀기(스와이프·드래그), 양옆 카드 클릭, 키보드 ← → 로 넘길 수 있습니다(js/main.js).
+           data-pos 는 처음 위치(center / next / prev)이고, 문장을 고치려면 <ul class="strategy-effects"> 안만 수정하면 됩니다. -->
       <section class="section work-values" id="work-values" aria-labelledby="workValuesTitle">
-        <h2 class="section-title" id="workValuesTitle">일할 때 중요하게 생각하는 것</h2>
-        <div class="card-grid">
-
-          <article class="stat-card">
-            <span class="stat-icon" aria-hidden="true">◈</span>
-            <h3>Context <em>맥락</em></h3>
-            <p>기능 하나를 만들기 전에 전체 프로세스와 비즈니스 목표부터 파악합니다.</p>
-            <p class="stat-example">SKYROUTE 예약·환불 기능을 만들 때, 예약·티켓·좌석·환불 상태가 하나의 흐름 안에서 맞물리도록 전체 데이터 관계를 먼저 그려봤습니다.</p>
-          </article>
-
-          <article class="stat-card">
-            <span class="stat-icon" aria-hidden="true">◆</span>
-            <h3>Quality <em>품질</em></h3>
-            <p>불편함과 불필요한 복잡성을 찾아내고, 더 나은 방법이 있는지 계속 확인합니다.</p>
-            <p class="stat-example">KICK-TREFF 채팅 기능에서 매번 전체 메시지를 조회하던 구조를 발견하고, 마지막 확인 이후 데이터만 갱신하도록 다시 설계했습니다.</p>
-          </article>
-
-          <article class="stat-card">
-            <span class="stat-icon" aria-hidden="true">◉</span>
-            <h3>Ownership <em>책임</em></h3>
-            <p>아무리 작은 업무라도 끝까지 챙기고 결과에 책임집니다.</p>
-            <p class="stat-example">검수 마감이 촉박했던 프로젝트에서 매크로를 직접 만들어 자동화하고, 일정보다 5일 앞당겨 마무리했습니다.</p>
-          </article>
-
+        <header class="strategy-intro">
+          <h2 class="section-title" id="workValuesTitle">업무 전략</h2>
+          <p class="strategy-lead">일할 때 중요하게 생각하는 세 가지</p>
+        </header>
+        <div class="strategy-carousel" id="strategyCarousel" role="region" aria-roledescription="회전 카드" aria-label="업무 전략 카드">
+          <div class="strategy-stage">
+            <article class="strategy" data-pos="center" aria-roledescription="카드" aria-label="1 / 3 · 맥락">
+              <div class="strategy-float">
+                <div class="strategy-card">
+                  <div class="gcard-head">
+                    <span class="gcard-cost" aria-hidden="true">01</span>
+                    <h3 class="strategy-title">전체를 먼저 이해한다</h3>
+                  </div>
+                  <div class="gcard-art" aria-hidden="true">
+                    <span class="gcard-spark"></span>
+                    <svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M3 6l6-2 8 3 6-2v15l-6 2-8-3-6 2z"/><path d="M9 4v15M17 7v15"/></svg>
+                  </div>
+                  <p class="gcard-type"><span class="gcard-type-tag">전략</span><span class="strategy-key">맥락</span><span class="strategy-key-en">Context</span></p>
+                  <ul class="strategy-effects">
+                    <li>주어진 업무만 보지 않고 전체 프로세스와 비즈니스 목표를 먼저 이해합니다.</li>
+                    <li>전체 맥락을 바탕으로 변화와 변수에도 유연하게 대응합니다.</li>
+                  </ul>
+                  <p class="gcard-foot"><span>엄상희 · 업무 전략</span><span>01 / 03</span></p>
+                </div>
+              </div>
+              <span class="strategy-shadow" aria-hidden="true"></span>
+            </article>
+            <article class="strategy" data-pos="next" aria-roledescription="카드" aria-label="2 / 3 · 품질" aria-hidden="true">
+              <div class="strategy-float">
+                <div class="strategy-card">
+                  <div class="gcard-head">
+                    <span class="gcard-cost" aria-hidden="true">02</span>
+                    <h3 class="strategy-title">쓰기 좋은지 검증한다</h3>
+                  </div>
+                  <div class="gcard-art" aria-hidden="true">
+                    <span class="gcard-spark"></span>
+                    <svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><circle cx="11" cy="11" r="7"/><path d="M16 16l7 7M8 11l2 2 4-4"/></svg>
+                  </div>
+                  <p class="gcard-type"><span class="gcard-type-tag">전략</span><span class="strategy-key">품질</span><span class="strategy-key-en">Quality</span></p>
+                  <ul class="strategy-effects">
+                    <li>단순히 동작하는 데 그치지 않고, 실제로 사용하기 좋은 결과물인지 검증합니다.</li>
+                    <li>사용자의 불편과 불필요한 복잡성을 찾아 지속적으로 개선합니다.</li>
+                  </ul>
+                  <p class="gcard-foot"><span>엄상희 · 업무 전략</span><span>02 / 03</span></p>
+                </div>
+              </div>
+              <span class="strategy-shadow" aria-hidden="true"></span>
+            </article>
+            <article class="strategy" data-pos="prev" aria-roledescription="카드" aria-label="3 / 3 · 책임" aria-hidden="true">
+              <div class="strategy-float">
+                <div class="strategy-card">
+                  <div class="gcard-head">
+                    <span class="gcard-cost" aria-hidden="true">03</span>
+                    <h3 class="strategy-title">결과가 나올 때까지 책임진다</h3>
+                  </div>
+                  <div class="gcard-art" aria-hidden="true">
+                    <span class="gcard-spark"></span>
+                    <svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M5 23V3M5 4h15l-4 4.5 4 4.5H5"/></svg>
+                  </div>
+                  <p class="gcard-type"><span class="gcard-type-tag">전략</span><span class="strategy-key">책임</span><span class="strategy-key-en">Ownership</span></p>
+                  <ul class="strategy-effects">
+                    <li>작은 업무라도 가볍게 넘기지 않고, 맡은 일은 결과가 나올 때까지 책임집니다.</li>
+                    <li>문제가 발생하면 원인을 끝까지 추적하고 해결합니다.</li>
+                  </ul>
+                  <p class="gcard-foot"><span>엄상희 · 업무 전략</span><span>03 / 03</span></p>
+                </div>
+              </div>
+              <span class="strategy-shadow" aria-hidden="true"></span>
+            </article>
+          </div>
+          <div class="strategy-nav">
+            <button type="button" class="strategy-arrow" data-step="-1" aria-label="이전 전략">◀</button>
+            <div class="strategy-dots">
+            <button type="button" class="strategy-dot" data-index="0" aria-current="true" aria-label="전략 01 맥락"><span>01</span>맥락</button>
+            <button type="button" class="strategy-dot" data-index="1" aria-current="false" aria-label="전략 02 품질"><span>02</span>품질</button>
+            <button type="button" class="strategy-dot" data-index="2" aria-current="false" aria-label="전략 03 책임"><span>03</span>책임</button>
+            </div>
+            <button type="button" class="strategy-arrow" data-step="1" aria-label="다음 전략">▶</button>
+          </div>
+          <span class="sr-only" id="strategyStatus" role="status"></span>
         </div>
       </section>
 

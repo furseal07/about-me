@@ -2,6 +2,15 @@ document.addEventListener('DOMContentLoaded', function () {
   'use strict';
 
   var motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  // 항상 첫 화면(소개)부터 시작합니다. 새로고침해도 이전 스크롤 위치나 주소 끝의 #앵커(#work-values)로 내려가지 않습니다.
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  if (location.hash) history.replaceState(null, '', location.pathname + location.search);
+  function scrollToPageTop() { window.scrollTo({ top: 0, left: 0, behavior: 'instant' }); }
+  scrollToPageTop();
+  window.addEventListener('load', function () {
+    // 이미지까지 다 불러온 뒤 브라우저가 위치를 다시 옮기는 경우를 막습니다. 인트로가 재생 중일 때만 (사용자가 아직 스크롤할 수 없을 때).
+    if (document.body.classList.contains('intro-active')) scrollToPageTop();
+  }, { once: true });
   var panels = document.querySelectorAll('.tab-panel');
   var navButtons = document.querySelectorAll('.nav-btn[data-target]');
   var header = document.querySelector('.site-header');
@@ -296,6 +305,95 @@ document.addEventListener('DOMContentLoaded', function () {
   });
   showTab('home');
 
+  // 첫 화면 아래 '업무 전략 ↓' 안내: 주소에 #work-values 를 남기지 않고 업무 전략으로 스크롤만 합니다.
+  var heroScroll = document.querySelector('.hero-scroll');
+  var workValues = document.getElementById('work-values');
+  if (heroScroll && workValues) {
+    heroScroll.addEventListener('click', function (event) {
+      event.preventDefault();
+      workValues.scrollIntoView({ behavior: motionPreference.matches ? 'auto' : 'smooth', block: 'start' });
+    });
+  }
+
+  // 업무 전략 회전 카드: 가운데 카드가 지금 보는 전략이고, 나머지 두 장은 양옆 뒤에 떠 있습니다(끝에서 처음으로 이어짐).
+  // ◀ ▶ 버튼 · 번호 버튼 · 좌우 밀기(스와이프/드래그) · 양옆 카드 클릭 · 키보드 ← → 로 넘깁니다.
+  var strategyCarousel = document.getElementById('strategyCarousel');
+  if (strategyCarousel) {
+    var strategyStage = strategyCarousel.querySelector('.strategy-stage');
+    var strategyCards = Array.from(strategyCarousel.querySelectorAll('.strategy'));
+    var strategyDots = Array.from(strategyCarousel.querySelectorAll('.strategy-dot'));
+    var strategyStatus = document.getElementById('strategyStatus');
+    var strategyIndex = 0;
+    var dragX = null;
+    var dragY = 0;
+    var resetTilt = function (card) {
+      var face = card.querySelector('.strategy-card');
+      face.style.removeProperty('--tilt-x');
+      face.style.removeProperty('--tilt-y');
+    };
+    var showStrategy = function (index, announce) {
+      var count = strategyCards.length;
+      strategyIndex = (index % count + count) % count;
+      strategyCards.forEach(function (card, i) {
+        var offset = (i - strategyIndex + count) % count;
+        var pos = offset === 0 ? 'center' : offset === 1 ? 'next' : 'prev';
+        card.dataset.pos = pos;
+        resetTilt(card);
+        if (pos === 'center') card.removeAttribute('aria-hidden');
+        else card.setAttribute('aria-hidden', 'true');
+      });
+      strategyDots.forEach(function (dot, i) { dot.setAttribute('aria-current', String(i === strategyIndex)); });
+      if (announce && strategyStatus) {
+        var active = strategyCards[strategyIndex];
+        strategyStatus.textContent = active.getAttribute('aria-label') + ': ' + active.querySelector('.strategy-title').textContent;
+      }
+    };
+    strategyCarousel.querySelectorAll('.strategy-arrow').forEach(function (arrow) {
+      arrow.addEventListener('click', function () { showStrategy(strategyIndex + Number(arrow.dataset.step), true); });
+    });
+    strategyDots.forEach(function (dot) {
+      dot.addEventListener('click', function () { showStrategy(Number(dot.dataset.index), true); });
+    });
+    strategyCarousel.addEventListener('keydown', function (event) {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      showStrategy(strategyIndex + (event.key === 'ArrowRight' ? 1 : -1), true);
+    });
+    // 좌우로 40px 넘게 밀면 넘기고, 거의 안 움직이고 누르면 그 카드(양옆 카드)를 가운데로 가져옵니다.
+    strategyStage.addEventListener('pointerdown', function (event) {
+      if (event.button !== 0) return;
+      dragX = event.clientX;
+      dragY = event.clientY;
+    });
+    strategyStage.addEventListener('pointerup', function (event) {
+      if (dragX === null) return;
+      var dx = event.clientX - dragX;
+      var dy = event.clientY - dragY;
+      dragX = null;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { showStrategy(strategyIndex + (dx < 0 ? 1 : -1), true); return; }
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) {
+        var card = event.target.closest('.strategy');
+        if (card && card.dataset.pos !== 'center') showStrategy(strategyCards.indexOf(card), true);
+      }
+    });
+    strategyStage.addEventListener('pointercancel', function () { dragX = null; });
+    // 가운데 카드에 마우스를 올리면 게임 카드처럼 마우스 쪽으로 살짝 기울어집니다. (마우스가 있는 기기에서만)
+    var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+    strategyCards.forEach(function (card) {
+      var face = card.querySelector('.strategy-card');
+      card.addEventListener('pointermove', function (event) {
+        if (card.dataset.pos !== 'center' || dragX !== null || !finePointer.matches || motionPreference.matches) return;
+        var box = face.getBoundingClientRect();
+        var x = (event.clientX - box.left) / box.width - .5;
+        var y = (event.clientY - box.top) / box.height - .5;
+        face.style.setProperty('--tilt-x', (x * 14).toFixed(2) + 'deg');
+        face.style.setProperty('--tilt-y', (-y * 12).toFixed(2) + 'deg');
+      });
+      card.addEventListener('pointerleave', function () { resetTilt(card); });
+    });
+    showStrategy(0, false);
+  }
+
   var intro = document.getElementById('intro');
   if (!intro) { syncHeroTyping(); return; }
   var skip = document.getElementById('introSkip');
@@ -417,6 +515,8 @@ document.addEventListener('DOMContentLoaded', function () {
     intro.classList.remove('intro-hide', 'is-ready');
     pageRegions.forEach(function (region) { region.inert = false; });
     document.body.classList.remove('intro-active');
+    // 처음 인트로가 끝나면 맨 위 첫 화면에서 시작합니다. (푸터의 '인트로 다시 보기'로 본 경우는 제자리)
+    if (returnFocus !== replay) scrollToPageTop();
     if (intro.contains(document.activeElement)) {
       (returnFocus || document.getElementById('mainContent')).focus({ preventScroll: true });
     }
