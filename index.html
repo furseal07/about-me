@@ -61,7 +61,16 @@
 
   <!-- ===== 상단 고정 네비게이션 (탭 메뉴) ===== -->
   <header class="site-header">
-    <span class="logo">SH</span>
+    <!-- 로고: 누르면 통통 튀는 물음표 블록. 칠 때마다 경험치가 오르고, 막대가 다 차면 레벨이 올라갑니다. -->
+    <button type="button" class="logo" id="logoQuest" aria-describedby="logoStatus">
+      <span class="logo-block" aria-hidden="true"></span>
+      <span class="logo-text">
+        <span class="logo-name">엄상희</span>
+        <span class="logo-level"><span class="logo-lv">LV.<span data-level>28</span></span><span class="logo-xp" aria-hidden="true"><i></i></span></span>
+      </span>
+      <span class="sr-only">: 물음표 블록 치기</span>
+    </button>
+    <span class="sr-only" id="logoStatus" role="status"></span>
     <nav class="site-nav" aria-label="주요 메뉴">
       <button type="button" class="nav-btn" data-target="home">소개</button>
       <button type="button" class="nav-btn" data-target="career">경력·학력</button>
@@ -107,7 +116,7 @@
           </button>
           <div class="hero-copy">
             <div class="dialogue-box hero-dialogue">
-              <p class="dialogue-label">엄상희 <span>· LV. 28</span></p>
+              <p class="dialogue-label">엄상희 <span>· LV. <span data-level>28</span></span></p>
               <button type="button" class="hero-dialogue-toggle" id="heroDialogueToggle" aria-label="Click! 캐릭터 정보 전환" aria-expanded="false" aria-controls="heroCharacterDetails" hidden>
                 <span class="hero-dialogue-hint" aria-hidden="true"><span>Click!</span><span class="dialogue-switch-icon">▼</span></span>
               </button>
@@ -148,14 +157,16 @@
                 </p>
                 <div class="role-stats">
                   <ul class="stat-badges is-active" data-stats="all" data-title="전체 요약">
-                    <li><em class="stat-kind">업무 경력</em><strong>5년+</strong><span>기획·운영 전체 합산</span></li>
-                    <li><em class="stat-kind">교육</em><strong>1,120h</strong><span>Java 풀스택 개발 과정</span></li>
-                    <li><em class="stat-kind">프로젝트</em><strong>3건</strong><span>팀 개발 프로젝트</span></li>
+                    <!-- 전체 요약 칸은 누를 수 있습니다: 업무 경력·교육 → 경력·학력 탭, 프로젝트 → 포트폴리오 이동 확인 창 -->
+                    <li class="stat-go"><em class="stat-kind">업무 경력</em><strong>5년+</strong><span>기획·운영 전체 합산</span><button type="button" class="stat-link" data-go="careerSection"><span class="sr-only">업무 경력 자세히 보기</span></button></li>
+                    <li class="stat-go"><em class="stat-kind">교육</em><strong>1,120h</strong><span>Java 풀스택 개발 과정</span><button type="button" class="stat-link" data-go="educationSection"><span class="sr-only">학력 자세히 보기</span></button></li>
+                    <li class="stat-go"><em class="stat-kind">프로젝트</em><strong>3건</strong><span>팀 개발 프로젝트</span><button type="button" class="stat-link" data-go="portfolio"><span class="sr-only">프로젝트를 개발자 포트폴리오에서 보기</span></button></li>
                   </ul>
                   <ul class="stat-badges" data-stats="plan" data-title="기획 경험">
-                    <li><em class="stat-kind">경력</em><strong>1년+</strong><span>콘텐츠·공연 기획</span></li>
-                    <li><em class="stat-kind">옥외 광고</em><strong class="stat-phrase">자사 캐릭터 광고 기획·&#8288;집행</strong><span>지하철 전광판</span></li>
-                    <li><em class="stat-kind">글로벌</em><strong class="stat-phrase">해외 커뮤니티 제휴로 웹툰 배포</strong><span>다국적 채널</span></li>
+                    <!-- 기획 칸도 누를 수 있습니다: 각각 자세한 내용 창(경력 정리 / 전광판 사진 / 웹툰·신문 지면)이 열립니다. -->
+                    <li class="stat-go"><em class="stat-kind">경력</em><strong>1년+</strong><span>콘텐츠·공연 기획</span><button type="button" class="stat-link" data-go="dialog:planCareerDialog"><span class="sr-only">기획 경력 자세히 보기</span></button></li>
+                    <li class="stat-go"><em class="stat-kind">옥외 광고</em><strong class="stat-phrase">자사 캐릭터 광고 기획·&#8288;집행</strong><span>지하철 전광판</span><button type="button" class="stat-link" data-go="dialog:planAdDialog"><span class="sr-only">지하철 전광판 광고 사진 보기</span></button></li>
+                    <li class="stat-go"><em class="stat-kind">글로벌</em><strong class="stat-phrase">해외 커뮤니티 제휴로 웹툰 배포</strong><span>다국적 채널</span><button type="button" class="stat-link" data-go="dialog:planWebtoonDialog"><span class="sr-only">웹툰과 신문 지면 보기</span></button></li>
                   </ul>
                   <ul class="stat-badges" data-stats="ops" data-title="운영 경험">
                     <li><em class="stat-kind">경력</em><strong>4년+</strong><span>데이터 운영 실무</span></li>
@@ -271,7 +282,7 @@
          ============================================================ -->
     <div class="tab-panel" data-panel="career">
 
-      <section class="section">
+      <section class="section" id="careerSection">
         <h2 class="section-title">경력</h2>
         <ol class="timeline timeline-gold">
 
@@ -302,7 +313,7 @@
         </ol>
       </section>
 
-      <section class="section">
+      <section class="section" id="educationSection">
         <h2 class="section-title">학력</h2>
         <ol class="timeline timeline-mint">
 
@@ -464,6 +475,91 @@
     </div>
 
   </main>
+
+
+  <!-- 기획 칸을 누르면 뜨는 자세히 보기 창 3개 -->
+  <dialog class="info-dialog" id="planCareerDialog" aria-labelledby="planCareerTitle">
+    <div class="info-dialog-body">
+      <header class="info-dialog-head">
+        <p class="info-dialog-label">기획 경험</p>
+        <h2 class="info-dialog-title" id="planCareerTitle">기획 경력</h2>
+        <form method="dialog"><button type="submit" class="info-dialog-close" aria-label="닫기">✕</button></form>
+      </header>
+
+      <article class="info-entry">
+        <a class="info-entry-thumb" href="assets/plan/play-poster.jpg" target="_blank" rel="noopener"><img src="assets/plan/play-poster.jpg" alt="연극 친구를 만들고 죽이는 방법 포스터" loading="lazy" width="600" height="849"></a>
+        <div class="info-entry-text">
+          <p class="info-entry-date">2018.05 – 2018.07</p>
+          <h3>연극 「친구를 만들고 죽이는 방법」 <span>공연 기획</span></h3>
+          <p>서울문화재단 최초예술지원 선정작으로, 언더스탠드에비뉴 아트스탠드에서 공연된 작품의 기획을 맡았습니다.</p>
+          <a class="info-link" href="https://nol.yanolja.com/ticket/products/18008784" target="_blank" rel="noopener">공연 정보 보기 ↗</a>
+        </div>
+      </article>
+
+      <article class="info-entry">
+        <div class="info-entry-text">
+          <p class="info-entry-date">2019.07 – 2020.07</p>
+          <h3>후엠아이글로벌 <span>마케팅팀 인턴</span></h3>
+          <p class="info-entry-role"><b>주요 역할</b> 자사 서비스 홍보를 위한 캐릭터 개발 및 디지털 콘텐츠 제작</p>
+          <ul class="info-list">
+            <li><b>콘텐츠 운영</b> 기업 블로그·SNS용 카드뉴스와 홍보 콘텐츠를 제작하며 하루 3건 이상 게시물 관리</li>
+            <li><b>웹툰 제작</b> 인스타툰 트렌드를 반영한 홍보 웹툰 시리즈를 단독 기획·제작해 브랜드 인지도 향상</li>
+            <li><b>캐릭터 개발</b> 회사 캐릭터 개발부터 광고 활용까지 전 과정을 주도해 브랜드 아이덴티티 구축에 기여</li>
+            <li><b>글로벌 배포</b> 제작한 웹툰을 해외 커뮤니티와 제휴해 다국적 채널에 배포, 홍보 범위 확대</li>
+            <li><b>옥외 광고</b> 자사 캐릭터를 활용한 지하철 전광판 광고를 기획·집행해 대중 노출 효과 극대화</li>
+          </ul>
+          <div class="info-jumps">
+            <button type="button" class="info-jump" data-go="dialog:planAdDialog">▶ 전광판 광고 보기</button>
+            <button type="button" class="info-jump" data-go="dialog:planWebtoonDialog">▶ 웹툰 보기</button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </dialog>
+
+  <dialog class="info-dialog" id="planAdDialog" aria-labelledby="planAdTitle">
+    <div class="info-dialog-body">
+      <header class="info-dialog-head">
+        <p class="info-dialog-label">옥외 광고 · 후엠아이글로벌</p>
+        <h2 class="info-dialog-title" id="planAdTitle">자사 캐릭터 지하철 전광판 광고</h2>
+        <form method="dialog"><button type="submit" class="info-dialog-close" aria-label="닫기">✕</button></form>
+      </header>
+      <p class="info-dialog-lead">자사 캐릭터를 활용한 지하철 전광판 광고를 기획하고 집행했습니다. 아래는 실제 역사 전광판에 송출된 화면입니다.</p>
+      <div class="info-gallery">
+        <figure><a href="assets/plan/subway-ad-1.jpg" target="_blank" rel="noopener"><img src="assets/plan/subway-ad-1.jpg" alt="지하철 역사 전광판에 송출된 캐릭터 광고 화면" loading="lazy" width="471" height="471"></a><figcaption>역사 전광판 송출 화면 ①</figcaption></figure>
+        <figure><a href="assets/plan/subway-ad-2.jpg" target="_blank" rel="noopener"><img src="assets/plan/subway-ad-2.jpg" alt="입국 환영 문구가 들어간 캐릭터 전광판 광고 화면" loading="lazy" width="520" height="443"></a><figcaption>역사 전광판 송출 화면 ②</figcaption></figure>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="info-dialog" id="planWebtoonDialog" aria-labelledby="planWebtoonTitle">
+    <div class="info-dialog-body">
+      <header class="info-dialog-head">
+        <p class="info-dialog-label">글로벌 · 후엠아이글로벌</p>
+        <h2 class="info-dialog-title" id="planWebtoonTitle">해외 커뮤니티 제휴 웹툰 배포</h2>
+        <form method="dialog"><button type="submit" class="info-dialog-close" aria-label="닫기">✕</button></form>
+      </header>
+      <p class="info-dialog-lead">인스타툰 트렌드에 맞춰 단독 기획·제작한 홍보 웹툰 「민원이의 일기」를 해외 커뮤니티와 제휴해 다국적 채널에 배포했습니다. 베트남 한인 신문 지면에도 실렸습니다.</p>
+      <div class="info-gallery">
+        <figure><a href="assets/plan/webtoon-cover.jpg" target="_blank" rel="noopener"><img src="assets/plan/webtoon-cover.jpg" alt="웹툰 민원이의 일기 EP.01 표지" loading="lazy" width="1000" height="1000"></a><figcaption>「민원이의 일기」 EP.01 표지</figcaption></figure>
+        <figure><a href="assets/plan/webtoon-strip.jpg" target="_blank" rel="noopener"><img src="assets/plan/webtoon-strip.jpg" alt="민원이의 일기 4컷 웹툰" loading="lazy" width="1000" height="1000"></a><figcaption>본편 4컷</figcaption></figure>
+        <figure class="is-wide"><a href="assets/plan/webtoon-vietnam-korea-times.pdf" target="_blank" rel="noopener"><img src="assets/plan/webtoon-newspaper.jpg" alt="웹툰이 실린 베트남 한인 신문 지면" loading="lazy"></a><figcaption>신문 지면 게재 (2020.05) — 아래쪽 8컷이 「민원이의 일기」입니다. 누르면 PDF가 열립니다.</figcaption></figure>
+      </div>
+      <a class="info-link" href="assets/plan/webtoon-vietnam-korea-times.pdf" target="_blank" rel="noopener">신문 지면 PDF 보기 ↗</a>
+    </div>
+  </dialog>
+
+  <!-- 프로젝트 칸을 누르면 뜨는 확인 창 -->
+  <dialog class="go-dialog" id="portfolioDialog" aria-labelledby="portfolioDialogTitle">
+    <form method="dialog" class="go-dialog-body">
+      <p class="go-dialog-label">개발자 포트폴리오</p>
+      <p class="go-dialog-text" id="portfolioDialogTitle">개발자 포트폴리오 페이지로<br>넘어가시겠습니까?</p>
+      <div class="go-dialog-actions">
+        <a class="go-dialog-btn is-primary" href="https://furseal07.github.io/" autofocus>이동</a>
+        <button type="submit" class="go-dialog-btn" value="cancel">취소</button>
+      </div>
+    </form>
+  </dialog>
 
   <footer class="site-footer">
     <p>© 2026 Jade. SAVE COMPLETE.</p>

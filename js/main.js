@@ -21,6 +21,55 @@ document.addEventListener('DOMContentLoaded', function () {
   if (header && 'ResizeObserver' in window) new ResizeObserver(measureHeader).observe(header);
   else window.addEventListener('resize', measureHeader);
 
+  // 헤더 로고 물음표 블록: 칠 때마다 경험치 +14 와 한마디가 튀어나오고, 막대가 다 차면 레벨이 오릅니다.
+  // 레벨은 소개 창의 'LV.' 숫자까지 함께 바뀝니다. (새로고침하면 28로 돌아옵니다)
+  var logoQuest = document.getElementById('logoQuest');
+  if (logoQuest) {
+    var logoXp = logoQuest.querySelector('.logo-xp');
+    var logoStatus = document.getElementById('logoStatus');
+    var levelLabels = document.querySelectorAll('[data-level]');
+    var logoLevel = 28;
+    var logoExp = 72;
+    var logoGain = 14;
+    var logoLines = ['버그 처치!', '커피 수혈 ☕', '문서 정리 완료', '커밋 푸시!', '회의 생존', '리팩터링 성공', '오타 발견!', '배포 무사 통과'];
+    var logoLineIndex = 0;
+    var logoTimer = 0;
+    var replayClass = function (name) {
+      logoQuest.classList.remove(name);
+      void logoQuest.offsetWidth; // 같은 애니메이션을 다시 재생하기 위한 리플로우
+      logoQuest.classList.add(name);
+    };
+    var popLogo = function (text, levelUp) {
+      var old = logoQuest.querySelector('.logo-pop');
+      if (old) old.remove();
+      var pop = document.createElement('span');
+      pop.className = 'logo-pop' + (levelUp ? ' is-levelup' : '');
+      pop.setAttribute('aria-hidden', 'true');
+      pop.textContent = text;
+      logoQuest.appendChild(pop);
+      pop.addEventListener('animationend', function () { pop.remove(); });
+    };
+    logoQuest.addEventListener('click', function () {
+      var line = logoLines[logoLineIndex++ % logoLines.length];
+      logoExp += logoGain;
+      var levelUp = logoExp >= 100;
+      if (levelUp) {
+        logoExp -= 100;
+        logoLevel += 1;
+        levelLabels.forEach(function (label) { label.textContent = String(logoLevel); });
+      }
+      // 레벨업이면 막대를 끝까지 채웠다가 남은 경험치로 다시 시작합니다.
+      logoXp.style.setProperty('--xp', levelUp ? '100' : String(logoExp));
+      if (levelUp) setTimeout(function () { logoXp.style.setProperty('--xp', String(logoExp)); }, 450);
+      replayClass(levelUp ? 'is-levelup' : 'is-bump');
+      clearTimeout(logoTimer);
+      logoTimer = setTimeout(function () { logoQuest.classList.remove('is-bump', 'is-levelup'); }, 950);
+      var message = levelUp ? 'LEVEL UP! LV.' + logoLevel : '+' + logoGain + ' EXP ' + line;
+      popLogo(message, levelUp);
+      if (logoStatus) logoStatus.textContent = levelUp ? '레벨 업! 엄상희 LV.' + logoLevel + ' 달성.' : '경험치 +' + logoGain + ', ' + line + ' 경험치 ' + logoExp + '%';
+    });
+  }
+
   var heroHome = document.querySelector('[data-panel="home"]');
   var heroPortrait = document.querySelector('.hero-portrait');
   var heroPortraitInView = true;
@@ -123,8 +172,8 @@ document.addEventListener('DOMContentLoaded', function () {
   var heroToggle = document.getElementById('heroDialogueToggle');
   var heroTimer = 0;
   var heroSummary = document.querySelector('.hero');
-  // 분야 메뉴 → 상태창 → 전체 요약 수치 순서로 하나씩 나타납니다.
-  var heroSummaryItems = Array.from(document.querySelectorAll('.hero .role-menu, .hero .role-tab, .hero .role-panel, .hero .stat-badges[data-stats="all"] > li'));
+  // 분야 메뉴 → 상태창 → 전체 요약 수치 → 맨 아래 '업무 전략 ↓' 순서로 하나씩 나타납니다.
+  var heroSummaryItems = Array.from(document.querySelectorAll('.hero .role-menu, .hero .role-tab, .hero .role-panel, .hero .stat-badges[data-stats="all"] > li, .hero .hero-scroll'));
   var heroSummaryTimer = 0;
   var heroSummaryIndex = 0;
   var heroSummaryStarted = false;
@@ -304,6 +353,36 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
   showTab('home');
+
+  // 요약 칸 누르기: 업무 경력·교육 → 경력·학력 탭의 해당 구역으로, 프로젝트 → 포트폴리오로 이동할지 묻는 창,
+  // 'dialog:아이디' → 그 자세히 보기 창(기획 칸). 창 안의 '▶ ○○ 보기' 버튼은 지금 창을 닫고 다른 창을 엽니다.
+  var portfolioDialog = document.getElementById('portfolioDialog');
+  document.querySelectorAll('.stat-link, .info-jump').forEach(function (link) {
+    link.addEventListener('click', function () {
+      var target = link.dataset.go;
+      if (target.indexOf('dialog:') === 0) {
+        var dialog = document.getElementById(target.slice(7));
+        var current = link.closest('dialog');
+        if (current) current.close();
+        if (dialog && dialog.showModal) dialog.showModal();
+        return;
+      }
+      if (target === 'portfolio') {
+        if (portfolioDialog && portfolioDialog.showModal) portfolioDialog.showModal();
+        else if (window.confirm('개발자 포트폴리오 페이지로 넘어가시겠습니까?')) location.href = 'https://furseal07.github.io/';
+        return;
+      }
+      showTab('career');
+      var section = document.getElementById(target);
+      if (section) section.scrollIntoView({ behavior: motionPreference.matches ? 'auto' : 'smooth', block: 'start' });
+    });
+  });
+  // 창 바깥(어두운 부분)을 눌러도 닫힙니다.
+  document.querySelectorAll('.go-dialog, .info-dialog').forEach(function (dialog) {
+    dialog.addEventListener('click', function (event) {
+      if (event.target === dialog) dialog.close();
+    });
+  });
 
   // 첫 화면 아래 '업무 전략 ↓' 안내: 주소에 #work-values 를 남기지 않고 업무 전략으로 스크롤만 합니다.
   var heroScroll = document.querySelector('.hero-scroll');
