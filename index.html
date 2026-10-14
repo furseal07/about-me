@@ -159,7 +159,7 @@
                   <ul class="stat-badges is-active" data-stats="all" data-title="전체 요약">
                     <!-- 전체 요약 칸은 누를 수 있습니다: 업무 경력·교육 → 경력·학력 탭, 프로젝트 → 포트폴리오 이동 확인 창 -->
                     <li class="stat-go"><em class="stat-kind">업무 경력</em><strong>5년+</strong><span>기획·운영 전체 합산</span><button type="button" class="stat-link" data-go="careerSection"><span class="sr-only">업무 경력 자세히 보기</span></button></li>
-                    <li class="stat-go"><em class="stat-kind">교육</em><strong>1,120h</strong><span>Java 풀스택 개발 과정</span><button type="button" class="stat-link" data-go="educationSection"><span class="sr-only">학력 자세히 보기</span></button></li>
+                    <li class="stat-go"><em class="stat-kind">교육</em><strong>1,120h</strong><span>Java 풀스택 개발 과정</span><button type="button" class="stat-link" data-go="trainingSection"><span class="sr-only">개발 교육 자세히 보기</span></button></li>
                     <li class="stat-go"><em class="stat-kind">프로젝트</em><strong>3건</strong><span>팀 개발 프로젝트</span><button type="button" class="stat-link" data-go="portfolio"><span class="sr-only">프로젝트를 개발자 포트폴리오에서 보기</span></button></li>
                   </ul>
                   <ul class="stat-badges" data-stats="plan" data-title="기획 경험">
@@ -169,14 +169,16 @@
                     <li class="stat-go"><em class="stat-kind">글로벌</em><strong class="stat-phrase">해외 커뮤니티 제휴로 웹툰 배포</strong><span>다국적 채널</span><button type="button" class="stat-link" data-go="dialog:planWebtoonDialog"><span class="sr-only">웹툰과 신문 지면 보기</span></button></li>
                   </ul>
                   <ul class="stat-badges" data-stats="ops" data-title="운영 경험">
-                    <li><em class="stat-kind">경력</em><strong>4년+</strong><span>데이터 운영 실무</span></li>
-                    <li><em class="stat-kind">처리량</em><strong>3,000~<wbr>5,500건+</strong><span>일평균 데이터 정제</span></li>
-                    <li><em class="stat-kind">성과</em><strong>+3%</strong><span>추천 탭 제작에 기여, 구매전환율 증가</span></li>
+                    <!-- 운영 칸도 누를 수 있습니다: 경력 정리 / 하루 처리량 막대 / 추천 탭 성과 창 -->
+                    <li class="stat-go"><em class="stat-kind">경력</em><strong>4년+</strong><span>데이터 운영 실무</span><button type="button" class="stat-link" data-go="dialog:opsCareerDialog"><span class="sr-only">운영 경력 자세히 보기</span></button></li>
+                    <li class="stat-go"><em class="stat-kind">처리량</em><strong>3,000~<wbr>5,500건+</strong><span>일평균 데이터 정제</span><button type="button" class="stat-link" data-go="dialog:opsVolumeDialog"><span class="sr-only">하루 처리량 자세히 보기</span></button></li>
+                    <li class="stat-go"><em class="stat-kind">성과</em><strong>+3%</strong><span>추천 탭 제작에 기여, 구매전환율 증가</span><button type="button" class="stat-link" data-go="dialog:opsResultDialog"><span class="sr-only">추천 탭 성과 자세히 보기</span></button></li>
                   </ul>
                   <ul class="stat-badges" data-stats="dev" data-title="개발 경험">
-                    <li><em class="stat-kind">교육</em><strong>1,120h</strong><span>개발 교육 수료</span></li>
-                    <li><em class="stat-kind">프로젝트</em><strong>3건</strong><span>팀 개발 프로젝트</span></li>
-                    <li><em class="stat-kind">자격증</em><strong>정보처리<wbr>기사</strong><span>필기 합격</span></li>
+                    <!-- 개발 칸: 교육·자격증 → 경력·학력 탭의 해당 칸, 프로젝트 → 포트폴리오 이동 확인 창 -->
+                    <li class="stat-go"><em class="stat-kind">교육</em><strong>1,120h</strong><span>개발 교육 수료</span><button type="button" class="stat-link" data-go="trainingSection"><span class="sr-only">개발 교육 자세히 보기</span></button></li>
+                    <li class="stat-go"><em class="stat-kind">프로젝트</em><strong>3건</strong><span>팀 개발 프로젝트</span><button type="button" class="stat-link" data-go="portfolio"><span class="sr-only">프로젝트를 개발자 포트폴리오에서 보기</span></button></li>
+                    <li class="stat-go"><em class="stat-kind">자격증</em><strong>정보처리<wbr>기사</strong><span>필기 합격</span><button type="button" class="stat-link" data-go="certSection"><span class="sr-only">자격증 자세히 보기</span></button></li>
                   </ul>
                 </div>
               </div>
@@ -184,94 +186,109 @@
             </div>
           </div>
         </div>
-        <a class="hero-scroll" href="#work-values"><span>업무 전략</span><span class="scroll-arrow" aria-hidden="true">↓</span></a>
+        <!-- 카탈로그 메뉴 버튼 세 개: 위 요약 수치까지 다 나타난 뒤에 하나씩 나타납니다. 누르면 바로 아래에 카탈로그 창이 열리고, 같은 버튼을 다시 누르면 닫힙니다. -->
+        <nav class="catalog-menu" aria-label="카탈로그 메뉴">
+          <button type="button" class="catalog-tab" id="tabStrategy" data-cat="strategy" data-panel="panelStrategy" aria-controls="catalogWindow" aria-expanded="false">
+            <span class="catalog-tab-icon"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="3" y="1" width="2" height="14"/><path d="M5 2h8l-2 3 2 3H5z"/></svg></span>
+            <span class="catalog-tab-text"><strong>업무 전략</strong><small>일할 때 중요하게 생각하는 세 가지</small></span>
+            <span class="catalog-tab-go" aria-hidden="true">▼</span>
+          </button>
+          <button type="button" class="catalog-tab is-fortune" id="tabFortune" data-cat="fortune" data-panel="panelFortune" aria-controls="catalogWindow" aria-expanded="false">
+            <span class="catalog-tab-icon"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M6 1h4v1h2v1h1v2h1v4h-1v2h-1v1H4v-1H3V9H2V5h1V3h1V2h2z"/><rect x="5" y="4" width="2" height="2" fill="#fffdf6"/><rect x="3" y="13" width="10" height="2"/></svg></span>
+            <span class="catalog-tab-text"><strong>오늘의 운세</strong><small>오늘 하루 행운 지수 확인하기</small></span>
+            <span class="catalog-tab-go" aria-hidden="true">▼</span>
+          </button>
+          <button type="button" class="catalog-tab is-lunch" id="tabLunch" data-cat="lunch" data-panel="panelLunch" aria-controls="catalogWindow" aria-expanded="false">
+            <span class="catalog-tab-icon"><svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><rect x="9" y="1" width="1" height="6"/><rect x="11" y="1" width="1" height="6"/><path d="M4 6h8v1h1v1H3V7h1z" fill="#fffdf6"/><path d="M1 8h14v2h-1v2h-2v1H4v-1H2v-2H1z"/><rect x="5" y="14" width="6" height="1"/></svg></span>
+            <span class="catalog-tab-text"><strong>오늘의 점메추</strong><small>점심 메뉴 슬롯머신 돌리기</small></span>
+            <span class="catalog-tab-go" aria-hidden="true">▼</span>
+          </button>
+        </nav>
       </section>
 
-      <!-- 업무 전략: 게임 카드 세 장이 떠 있는 회전 카드입니다. 가운데 카드가 지금 보는 전략이고, 양옆 카드는 패처럼 비스듬히 뒤에 떠 있습니다.
-           카드 한 장 = 보석 번호 + 이름 띠 → 그림 칸 → 종류 줄(전략 · 키워드) → 효과 칸(문장 두 개) → 세트 이름·번호.
-           ◀ ▶ 버튼, 아래 번호 버튼, 좌우로 밀기(스와이프·드래그), 양옆 카드 클릭, 키보드 ← → 로 넘길 수 있습니다(js/main.js).
-           data-pos 는 처음 위치(center / next / prev)이고, 문장을 고치려면 <ul class="strategy-effects"> 안만 수정하면 됩니다. -->
+      <!-- 카탈로그 창: 처음엔 닫혀 있고, 첫 화면 맨 아래 메뉴 버튼(업무 전략 · 오늘의 운세 · 오늘의 점메추)을 누르면 여기에 열립니다.
+           첫 화면 창들과 같은 모양 · 같은 폭이고, 오른쪽 위 '닫기'로 닫습니다. -->
       <section class="section work-values" id="work-values" aria-labelledby="workValuesTitle">
-        <header class="strategy-intro">
-          <h2 class="section-title" id="workValuesTitle">업무 전략</h2>
-          <p class="strategy-lead">일할 때 중요하게 생각하는 세 가지</p>
-        </header>
-        <div class="strategy-carousel" id="strategyCarousel" role="region" aria-roledescription="회전 카드" aria-label="업무 전략 카드">
-          <div class="strategy-stage">
-            <article class="strategy" data-pos="center" aria-roledescription="카드" aria-label="1 / 3 · 맥락">
-              <div class="strategy-float">
-                <div class="strategy-card">
-                  <div class="gcard-head">
-                    <span class="gcard-cost" aria-hidden="true">01</span>
-                    <h3 class="strategy-title">전체를 먼저 이해한다</h3>
-                  </div>
-                  <div class="gcard-art" aria-hidden="true">
-                    <span class="gcard-spark"></span>
-                    <svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M3 6l6-2 8 3 6-2v15l-6 2-8-3-6 2z"/><path d="M9 4v15M17 7v15"/></svg>
-                  </div>
-                  <p class="gcard-type"><span class="gcard-type-tag">전략</span><span class="strategy-key">맥락</span><span class="strategy-key-en">Context</span></p>
-                  <ul class="strategy-effects">
+        <h2 class="sr-only" id="workValuesTitle">카탈로그: 업무 전략 · 오늘의 운세 · 오늘의 점메추</h2>
+        <div class="catalog-window" id="catalogWindow" hidden>
+          <button type="button" class="catalog-close" id="catalogClose" aria-label="카탈로그 창 닫기">닫기 ✕</button>
+          <div class="catalog-case">
+
+            <!-- CATALOG 01 업무 전략: 카드 세 장을 나란히 진열 -->
+            <div class="catalog-panel is-active" id="panelStrategy" aria-labelledby="tabStrategy">
+              <p class="catalog-panel-label">일할 때 중요하게 생각하는 세 가지</p>
+              <div class="cat-items">
+                <article class="cat-item">
+                  <header class="cat-item-head"><span class="cat-item-no">No.01</span><span class="cat-item-key">맥락 <small>Context</small></span></header>
+                  <div class="cat-item-art" aria-hidden="true"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M3 6l6-2 8 3 6-2v15l-6 2-8-3-6 2z"/><path d="M9 4v15M17 7v15"/></svg></div>
+                  <h3 class="cat-item-title">전체를 먼저 이해한다</h3>
+                  <ul class="cat-item-effects">
                     <li>주어진 업무만 보지 않고 전체 프로세스와 비즈니스 목표를 먼저 이해합니다.</li>
                     <li>전체 맥락을 바탕으로 변화와 변수에도 유연하게 대응합니다.</li>
                   </ul>
-                  <p class="gcard-foot"><span>엄상희 · 업무 전략</span><span>01 / 03</span></p>
-                </div>
-              </div>
-              <span class="strategy-shadow" aria-hidden="true"></span>
-            </article>
-            <article class="strategy" data-pos="next" aria-roledescription="카드" aria-label="2 / 3 · 품질" aria-hidden="true">
-              <div class="strategy-float">
-                <div class="strategy-card">
-                  <div class="gcard-head">
-                    <span class="gcard-cost" aria-hidden="true">02</span>
-                    <h3 class="strategy-title">쓰기 좋은지 검증한다</h3>
-                  </div>
-                  <div class="gcard-art" aria-hidden="true">
-                    <span class="gcard-spark"></span>
-                    <svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><circle cx="11" cy="11" r="7"/><path d="M16 16l7 7M8 11l2 2 4-4"/></svg>
-                  </div>
-                  <p class="gcard-type"><span class="gcard-type-tag">전략</span><span class="strategy-key">품질</span><span class="strategy-key-en">Quality</span></p>
-                  <ul class="strategy-effects">
+                  <p class="cat-item-foot">엄상희 · 업무 전략 <span>01 / 03</span></p>
+                </article>
+                <article class="cat-item">
+                  <header class="cat-item-head"><span class="cat-item-no">No.02</span><span class="cat-item-key">품질 <small>Quality</small></span></header>
+                  <div class="cat-item-art" aria-hidden="true"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><circle cx="11" cy="11" r="7"/><path d="M16 16l7 7M8 11l2 2 4-4"/></svg></div>
+                  <h3 class="cat-item-title">쓰기 좋은지 검증한다</h3>
+                  <ul class="cat-item-effects">
                     <li>단순히 동작하는 데 그치지 않고, 실제로 사용하기 좋은 결과물인지 검증합니다.</li>
                     <li>사용자의 불편과 불필요한 복잡성을 찾아 지속적으로 개선합니다.</li>
                   </ul>
-                  <p class="gcard-foot"><span>엄상희 · 업무 전략</span><span>02 / 03</span></p>
-                </div>
-              </div>
-              <span class="strategy-shadow" aria-hidden="true"></span>
-            </article>
-            <article class="strategy" data-pos="prev" aria-roledescription="카드" aria-label="3 / 3 · 책임" aria-hidden="true">
-              <div class="strategy-float">
-                <div class="strategy-card">
-                  <div class="gcard-head">
-                    <span class="gcard-cost" aria-hidden="true">03</span>
-                    <h3 class="strategy-title">결과가 나올 때까지 책임진다</h3>
-                  </div>
-                  <div class="gcard-art" aria-hidden="true">
-                    <span class="gcard-spark"></span>
-                    <svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M5 23V3M5 4h15l-4 4.5 4 4.5H5"/></svg>
-                  </div>
-                  <p class="gcard-type"><span class="gcard-type-tag">전략</span><span class="strategy-key">책임</span><span class="strategy-key-en">Ownership</span></p>
-                  <ul class="strategy-effects">
+                  <p class="cat-item-foot">엄상희 · 업무 전략 <span>02 / 03</span></p>
+                </article>
+                <article class="cat-item">
+                  <header class="cat-item-head"><span class="cat-item-no">No.03</span><span class="cat-item-key">책임 <small>Ownership</small></span></header>
+                  <div class="cat-item-art" aria-hidden="true"><svg viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M5 23V3M5 4h15l-4 4.5 4 4.5H5"/></svg></div>
+                  <h3 class="cat-item-title">결과가 나올 때까지 책임진다</h3>
+                  <ul class="cat-item-effects">
                     <li>작은 업무라도 가볍게 넘기지 않고, 맡은 일은 결과가 나올 때까지 책임집니다.</li>
                     <li>문제가 발생하면 원인을 끝까지 추적하고 해결합니다.</li>
                   </ul>
-                  <p class="gcard-foot"><span>엄상희 · 업무 전략</span><span>03 / 03</span></p>
+                  <p class="cat-item-foot">엄상희 · 업무 전략 <span>03 / 03</span></p>
+                </article>
+              </div>
+            </div>
+
+            <!-- CATALOG 02 오늘의 운세: 날짜로 정해지는 운세 (내용은 js/main.js 가 채웁니다) -->
+            <div class="catalog-panel is-fortune" id="panelFortune" aria-labelledby="tabFortune" aria-hidden="true" inert>
+              <p class="catalog-panel-label"><b id="fortuneDate">오늘의 운세</b></p>
+              <div class="fortune-layout">
+                <div class="fortune-card">
+                  <p class="fortune-grade" id="fortuneGrade">길</p>
+                  <p class="fortune-text" id="fortuneText"></p>
+                </div>
+                <div class="fortune-side">
+                  <dl class="fortune-stats">
+                    <div><dt>업무운</dt><dd class="fortune-stars" id="fortuneWork"></dd></div>
+                    <div><dt>대인운</dt><dd class="fortune-stars" id="fortunePeople"></dd></div>
+                    <div><dt>행운의 아이템</dt><dd id="fortuneItem"></dd></div>
+                    <div><dt>행운의 색</dt><dd id="fortuneColor"></dd></div>
+                    <div><dt>행운의 숫자</dt><dd id="fortuneNumber"></dd></div>
+                    <div><dt>오늘의 한마디</dt><dd id="fortuneWord"></dd></div>
+                  </dl>
+                  <p class="fortune-note">재미로 보는 운세예요. 날짜가 바뀌면 운세도 바뀝니다.</p>
                 </div>
               </div>
-              <span class="strategy-shadow" aria-hidden="true"></span>
-            </article>
-          </div>
-          <div class="strategy-nav">
-            <button type="button" class="strategy-arrow" data-step="-1" aria-label="이전 전략">◀</button>
-            <div class="strategy-dots">
-            <button type="button" class="strategy-dot" data-index="0" aria-current="true" aria-label="전략 01 맥락"><span>01</span>맥락</button>
-            <button type="button" class="strategy-dot" data-index="1" aria-current="false" aria-label="전략 02 품질"><span>02</span>품질</button>
-            <button type="button" class="strategy-dot" data-index="2" aria-current="false" aria-label="전략 03 책임"><span>03</span>책임</button>
             </div>
-            <button type="button" class="strategy-arrow" data-step="1" aria-label="다음 전략">▶</button>
+
+            <!-- CATALOG 03 오늘의 점메추: 탭을 열 때마다 슬롯머신이 돕니다 -->
+            <div class="catalog-panel is-lunch" id="panelLunch" aria-labelledby="tabLunch" aria-hidden="true" inert>
+              <p class="catalog-panel-label">오늘 점심 뭐 먹지?</p>
+              <div class="lunch-layout">
+                <div class="lunch-slot" id="lunchSlot">
+                  <span class="lunch-emoji" id="lunchEmoji" aria-hidden="true">🍚</span>
+                  <p class="lunch-name" id="lunchName">두구두구…</p>
+                </div>
+                <div class="lunch-side">
+                  <p class="lunch-comment" id="lunchComment" role="status"></p>
+                  <div class="lunch-actions"><button type="button" class="info-jump" id="lunchRoll">▶ 다시 돌리기</button></div>
+                </div>
+              </div>
+            </div>
+
           </div>
-          <span class="sr-only" id="strategyStatus" role="status"></span>
         </div>
       </section>
 
@@ -282,12 +299,15 @@
          ============================================================ -->
     <div class="tab-panel" data-panel="career">
 
-      <section class="section" id="careerSection">
+      <!-- 경력·학력 탭은 한 화면 보드: 왼쪽 경력, 오른쪽 학력 / 경험·교육·인턴 / 자격증 -->
+      <div class="career-board">
+
+      <section class="section board-career" id="careerSection">
         <h2 class="section-title">경력</h2>
         <ol class="timeline timeline-gold">
 
           <li class="timeline-item">
-            <p class="timeline-date">2024.01 – 재직중</p>
+            <p class="timeline-date">2024.01 – 2025.12</p>
             <h3>퍼솔켈리코리아 <span>(버킷플레이스 파견 · Search Operation)</span></h3>
             <p>오늘의집 검색·광고 품질 관리, 텍소노미 정비와 토픽 분류 모델 구축 지원으로 추천 탭 구매전환율 3% 향상에 기여했습니다.</p>
           </li>
@@ -304,24 +324,12 @@
             <p>코카콜라 브랜드 소셜 데이터를 일평균 5,500~7,000건 규모로 정제·감성 분류하며 브랜드 모니터링을 운영했습니다.</p>
           </li>
 
-          <li class="timeline-item">
-            <p class="timeline-date">2019.07 – 2020.07</p>
-            <h3>후엠아이글로벌</h3>
-            <p>회사 캐릭터를 기획·개발하고, 인스타툰과 카드뉴스 등 홍보 콘텐츠를 직접 제작해 SNS 채널을 운영했습니다.</p>
-          </li>
-
         </ol>
       </section>
 
-      <section class="section" id="educationSection">
+      <section class="section board-education" id="educationSection">
         <h2 class="section-title">학력</h2>
         <ol class="timeline timeline-mint">
-
-          <li class="timeline-item">
-            <p class="timeline-date">2025.12 – 2026.07</p>
-            <h3>쌍용강북교육센터</h3>
-            <p>AWS &amp; CI/CD 기반 Java 클라우드 풀스택 개발자 양성과정, 1,120시간 수료.</p>
-          </li>
 
           <li class="timeline-item">
             <p class="timeline-date">2025.03 – 재학중</p>
@@ -344,7 +352,26 @@
         </ol>
       </section>
 
-      <section class="section">
+      <section class="section board-training" id="trainingSection">
+        <h2 class="section-title">경험 · 교육 · 인턴</h2>
+        <ol class="timeline timeline-rose">
+
+          <li class="timeline-item">
+            <p class="timeline-date">2025.12 – 2026.07</p>
+            <h3>쌍용강북교육센터</h3>
+            <p>AWS &amp; CI/CD 기반 Java 클라우드 풀스택 개발자 양성과정, 1,120시간 수료.</p>
+          </li>
+
+          <li class="timeline-item">
+            <p class="timeline-date">2019.07 – 2020.07</p>
+            <h3>후엠아이글로벌 <span>(마케팅팀 인턴)</span></h3>
+            <p>회사 캐릭터를 기획·개발하고, 인스타툰과 카드뉴스 등 홍보 콘텐츠를 직접 제작해 SNS 채널을 운영했습니다.</p>
+          </li>
+
+        </ol>
+      </section>
+
+      <section class="section board-cert" id="certSection">
         <h2 class="section-title">자격증</h2>
         <div class="item-grid">
           <div class="item-card">
@@ -354,8 +381,17 @@
               <p>필기 합격 · 2026.03 · 한국산업인력공단</p>
             </div>
           </div>
+          <div class="item-card">
+            <span class="item-icon" aria-hidden="true">🚗</span>
+            <div>
+              <h3>2종 보통 운전면허</h3>
+              <p>경찰청</p>
+            </div>
+          </div>
         </div>
       </section>
+
+      </div>
 
     </div>
 
@@ -549,6 +585,119 @@
     </div>
   </dialog>
 
+  <!-- 운영 칸을 누르면 뜨는 자세히 보기 창 3개 (민트색) -->
+  <dialog class="info-dialog is-ops" id="opsCareerDialog" aria-labelledby="opsCareerTitle">
+    <div class="info-dialog-body">
+      <header class="info-dialog-head">
+        <p class="info-dialog-label">운영 경험</p>
+        <h2 class="info-dialog-title" id="opsCareerTitle">데이터 운영 경력</h2>
+        <form method="dialog"><button type="submit" class="info-dialog-close" aria-label="닫기">✕</button></form>
+      </header>
+
+      <article class="info-entry">
+        <div class="info-entry-text">
+          <p class="info-entry-date">2024.01 – 2025.12 · 2년</p>
+          <h3>검색 품질 및 콘텐츠 데이터 관리 <span>퍼솔켈리코리아 · 버킷플레이스(오늘의집) 파견</span></h3>
+          <p class="info-entry-role"><b>주요 역할</b> 오늘의집 검색·광고 품질 모니터링, 텍소노미 및 콘텐츠 분석</p>
+          <ul class="info-list">
+            <li><b>품질 선별</b> 검색 결과 신뢰성을 위해 저품질 상품을 걸러내고 고품질 콘텐츠를 선별</li>
+            <li><b>적합성 검토</b> 검색 키워드 적합성 기준에 따라 상품·광고·이미지·게시물 검토 및 조정</li>
+            <li><b>이미지 라벨링</b> 상품 이미지 속 객체를 식별해 BBox 기반 Annotation 작업 수행</li>
+            <li><b>상품 검수</b> 하루 560~1,120건 검수로 품질 오류율을 줄이고 안정적인 검색 환경 유지</li>
+            <li><b>광고 검수</b> 하루 840~3,500건 광고 상품 검수로 광고 상품 탭 생성·운영에 기여</li>
+            <li><b>텍소노미</b> 키워드 기반 콘텐츠 분류 체계 정비·토픽 분류 모델 구축 지원으로 '추천' 탭 구매전환율 3% 증가</li>
+          </ul>
+          <div class="info-jumps">
+            <button type="button" class="info-jump" data-go="dialog:opsVolumeDialog">▶ 하루 처리량 보기</button>
+            <button type="button" class="info-jump" data-go="dialog:opsResultDialog">▶ 추천 탭 성과 보기</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="info-entry">
+        <div class="info-entry-text">
+          <p class="info-entry-date">2023.09 – 2023.12 · 3개월</p>
+          <h3>3D 발화 데이터 기반 AI 학습용 데이터 검수 <span>인사이터</span></h3>
+          <p class="info-entry-role"><b>주요 역할</b> 데이터 라벨링 검수 및 품질 관리</p>
+          <ul class="info-list">
+            <li><b>검수</b> 크라우드 워커의 3D 이미지 라벨링 결과를 가이드 기준으로 검수하고 오류 데이터 식별</li>
+            <li><b>효율화</b> 단축키 매크로 프로그램을 직접 설정해 검수 효율 극대화</li>
+            <li><b>조기 완료</b> 자동화 도구 도입으로 작업 속도를 높여 계약 마감일보다 5일 앞당겨 전체 검수 완료</li>
+            <li><b>마무리</b> 품질과 속도를 모두 충족하며 AI 학습용 데이터 구축 프로젝트를 성공적으로 마무리</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="info-entry">
+        <div class="info-entry-text">
+          <p class="info-entry-date">2021.06 – 2023.06 · 2년</p>
+          <h3>코카콜라 브랜드 소셜 데이터 라벨링 및 감성 분류 <span>뉴엔에이아이</span></h3>
+          <p class="info-entry-role"><b>주요 역할</b> 소셜 빅데이터 라벨링 및 품질 검수</p>
+          <ul class="info-list">
+            <li><b>데이터 정제</b> 코카콜라 및 경쟁사 음료 관련 소셜 데이터를 정상/비정상으로 분류해 데이터셋 정제</li>
+            <li><b>감성 분류</b> 하루 평균 5,500~7,000건을 긍정·부정·중립으로 분류하며 품질 기준 충족</li>
+            <li><b>이상 탐지</b> 제품 출시·이슈 발생 시 데이터 이상 패턴을 분석·보고해 가이드 개정에 기여</li>
+            <li><b>기준 적용</b> 바뀐 작업 기준을 빠르게 적용하며 품질 관리 수준을 안정적으로 유지</li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </dialog>
+
+  <dialog class="info-dialog is-ops" id="opsVolumeDialog" aria-labelledby="opsVolumeTitle">
+    <div class="info-dialog-body">
+      <header class="info-dialog-head">
+        <p class="info-dialog-label">처리량</p>
+        <h2 class="info-dialog-title" id="opsVolumeTitle">하루에 처리한 데이터 양</h2>
+        <form method="dialog"><button type="submit" class="info-dialog-close" aria-label="닫기">✕</button></form>
+      </header>
+      <p class="info-dialog-lead">업무마다 하루에 검수·분류한 건수입니다. 막대 하나의 칸은 1,000건이고, 색칠된 부분이 하루 처리 범위입니다.</p>
+      <div class="info-bars">
+        <div class="info-bar-row">
+          <p class="info-bar-name">소셜 데이터 감성 분류<small>뉴엔에이아이 · 2021–2023</small></p>
+          <div class="info-bar-track" aria-hidden="true"><span class="info-bar-fill" style="--from: 78.57%; --to: 100%;"></span></div>
+          <p class="info-bar-value">하루 5,500 ~ 7,000건</p>
+        </div>
+        <div class="info-bar-row">
+          <p class="info-bar-name">광고 상품 검수<small>오늘의집 · 2024–2025</small></p>
+          <div class="info-bar-track" aria-hidden="true"><span class="info-bar-fill" style="--from: 12%; --to: 50%;"></span></div>
+          <p class="info-bar-value">하루 840 ~ 3,500건</p>
+        </div>
+        <div class="info-bar-row">
+          <p class="info-bar-name">상품 검수<small>오늘의집 · 2024–2025</small></p>
+          <div class="info-bar-track" aria-hidden="true"><span class="info-bar-fill" style="--from: 8%; --to: 16%;"></span></div>
+          <p class="info-bar-value">하루 560 ~ 1,120건</p>
+        </div>
+        <div class="info-bar-row" aria-hidden="true"><span></span><p class="info-bar-scale"><span>0</span><span>1천</span><span>2천</span><span>3천</span><span>4천</span><span>5천</span><span>6천</span><span>7천건</span></p></div>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="info-dialog is-ops" id="opsResultDialog" aria-labelledby="opsResultTitle">
+    <div class="info-dialog-body">
+      <header class="info-dialog-head">
+        <p class="info-dialog-label">성과 · 오늘의집</p>
+        <h2 class="info-dialog-title" id="opsResultTitle">'추천' 탭 구매전환율 +3%</h2>
+        <form method="dialog"><button type="submit" class="info-dialog-close" aria-label="닫기">✕</button></form>
+      </header>
+      <p class="info-dialog-lead">키워드 기반 콘텐츠 분류 체계(텍소노미)를 정비하고 토픽 분류 모델 구축을 지원해, 오늘의집 '추천' 탭 제작에 기여했습니다.</p>
+      <ol class="info-flow">
+        <li>키워드 기반<br>텍소노미 정비</li>
+        <li class="info-flow-arrow" aria-hidden="true">▶</li>
+        <li>토픽 분류 모델<br>구축 지원</li>
+        <li class="info-flow-arrow" aria-hidden="true">▶</li>
+        <li>'추천' 탭<br>콘텐츠 분류</li>
+        <li class="info-flow-arrow" aria-hidden="true">▶</li>
+        <li class="is-result"><span><strong>+3%</strong>구매전환율</span></li>
+      </ol>
+      <div class="info-gallery">
+        <figure class="is-wide"><a href="assets/ops/ops-recommend-tab.jpg" target="_blank" rel="noopener"><img src="assets/ops/ops-recommend-tab.jpg" alt="오늘의집 집구경 추천 탭 화면" loading="lazy" width="1186" height="940"></a><figcaption>오늘의집 &gt; 집구경 &gt; '추천' 탭 화면</figcaption></figure>
+      </div>
+      <a class="info-link" href="https://contents.ohou.se/topics/recommend" target="_blank" rel="noopener">오늘의집 '추천' 탭 바로 가기 ↗</a>
+    </div>
+  </dialog>
+
+
   <!-- 프로젝트 칸을 누르면 뜨는 확인 창 -->
   <dialog class="go-dialog" id="portfolioDialog" aria-labelledby="portfolioDialogTitle">
     <form method="dialog" class="go-dialog-body">
@@ -562,7 +711,16 @@
   </dialog>
 
   <footer class="site-footer">
-    <p>© 2026 Jade. SAVE COMPLETE.</p>
+    <!-- 땅 위 동물들: 마을 앞 흙길을 걸어 다니고, 누른 동물만 깡충 뜁니다(꾸밈 요소라 화면 읽기 프로그램에서는 숨김) -->
+    <div class="critters" id="critters" aria-hidden="true">
+      <span class="critter critter-chicken" data-speed="18"></span>
+      <span class="critter critter-bunny" data-speed="26" data-hop="true"></span>
+      <span class="critter critter-cat" data-speed="20"></span>
+      <span class="critter critter-hen" data-speed="16"></span>
+      <span class="critter critter-dog" data-speed="30"></span>
+      <span class="critter critter-duck" data-speed="14"></span>
+    </div>
+    <p>© 2026 Jade.</p>
     <button type="button" id="introReplay" class="btn btn-mini intro-replay" hidden>인트로 다시 보기 ↻</button>
   </footer>
 

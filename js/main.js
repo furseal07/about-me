@@ -172,8 +172,8 @@ document.addEventListener('DOMContentLoaded', function () {
   var heroToggle = document.getElementById('heroDialogueToggle');
   var heroTimer = 0;
   var heroSummary = document.querySelector('.hero');
-  // 분야 메뉴 → 상태창 → 전체 요약 수치 → 맨 아래 '업무 전략 ↓' 순서로 하나씩 나타납니다.
-  var heroSummaryItems = Array.from(document.querySelectorAll('.hero .role-menu, .hero .role-tab, .hero .role-panel, .hero .stat-badges[data-stats="all"] > li, .hero .hero-scroll'));
+  // 분야 메뉴 → 상태창 → 전체 요약 수치 → 맨 아래 메뉴 버튼(업무 전략·운세·점메추) 순서로 하나씩 나타납니다.
+  var heroSummaryItems = Array.from(document.querySelectorAll('.hero .role-menu, .hero .role-tab, .hero .role-panel, .hero .stat-badges[data-stats="all"] > li, .hero .catalog-menu > .catalog-tab'));
   var heroSummaryTimer = 0;
   var heroSummaryIndex = 0;
   var heroSummaryStarted = false;
@@ -357,7 +357,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // 요약 칸 누르기: 업무 경력·교육 → 경력·학력 탭의 해당 구역으로, 프로젝트 → 포트폴리오로 이동할지 묻는 창,
   // 'dialog:아이디' → 그 자세히 보기 창(기획 칸). 창 안의 '▶ ○○ 보기' 버튼은 지금 창을 닫고 다른 창을 엽니다.
   var portfolioDialog = document.getElementById('portfolioDialog');
-  document.querySelectorAll('.stat-link, .info-jump').forEach(function (link) {
+  document.querySelectorAll('.stat-link, .info-jump[data-go]').forEach(function (link) {
     link.addEventListener('click', function () {
       var target = link.dataset.go;
       if (target.indexOf('dialog:') === 0) {
@@ -374,7 +374,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       showTab('career');
       var section = document.getElementById(target);
-      if (section) section.scrollIntoView({ behavior: motionPreference.matches ? 'auto' : 'smooth', block: 'start' });
+      if (section) section.scrollIntoView({ behavior: motionPreference.matches ? 'auto' : 'smooth', block: 'nearest' });
     });
   });
   // 창 바깥(어두운 부분)을 눌러도 닫힙니다.
@@ -384,93 +384,237 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // 첫 화면 아래 '업무 전략 ↓' 안내: 주소에 #work-values 를 남기지 않고 업무 전략으로 스크롤만 합니다.
-  var heroScroll = document.querySelector('.hero-scroll');
-  var workValues = document.getElementById('work-values');
-  if (heroScroll && workValues) {
-    heroScroll.addEventListener('click', function (event) {
-      event.preventDefault();
-      workValues.scrollIntoView({ behavior: motionPreference.matches ? 'auto' : 'smooth', block: 'start' });
+  // 오늘의 운세(카탈로그 02): 날짜로 정해지는 운세라 같은 날에는 몇 번을 열어도 같고, 다음 날 바뀝니다.
+  var fortunePanel = document.getElementById('panelFortune');
+  if (fortunePanel) {
+    var today = new Date();
+    var dateKey = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    var seed = 0;
+    for (var c = 0; c < dateKey.length; c++) seed = (seed * 31 + dateKey.charCodeAt(c)) >>> 0;
+    var random = function () { // 날짜 씨앗으로 만드는 작은 난수 (mulberry32)
+      seed = (seed + 0x6D2B79F5) >>> 0;
+      var t = seed;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+    var pick = function (list) { return list[Math.floor(random() * list.length)]; };
+    var fortunes = [
+      ['대길', '막혔던 일이 술술 풀리는 날. 미뤄 둔 버그부터 잡아 보세요.'],
+      ['대길', '오늘 쓴 코드는 한 번에 빌드됩니다. 아마도요.'],
+      ['대길', '회의가 예정보다 일찍 끝납니다. 남은 시간은 온전히 당신 것.'],
+      ['길', '작은 친절이 큰 기회로 돌아옵니다. 동료의 질문에 한 번 더 답해 주세요.'],
+      ['길', '새로운 걸 배우기 딱 좋은 날. 문서 한 페이지가 내일의 무기가 됩니다.'],
+      ['길', '오늘 만난 사람이 좋은 인연이 됩니다. 먼저 인사해 보세요.'],
+      ['길', '오래 연락 못 한 사람에게서 반가운 소식이 옵니다.'],
+      ['중길', '꾸준함이 빛을 보는 날. 평소처럼만 해도 칭찬받습니다.'],
+      ['중길', '점심 메뉴 고민이 길어질 수 있어요. 오늘의 점메추에 맡겨 보세요.'],
+      ['중길', '정리 정돈하면 운이 들어옵니다. 바탕화면 폴더부터!'],
+      ['소길', '서두르면 오타가 납니다. 저장하기 전에 한 번 더 확인!'],
+      ['소길', '작은 실수는 웃어넘기면 금방 수습됩니다.']
+    ];
+    var items = ['따뜻한 아메리카노', '기계식 키보드', '포스트잇', '무선 이어폰', '텀블러', '형광펜', '고무 오리', '초코우유', '손수건', '새 공책'];
+    var colors = [['민트', '#22b68f'], ['하늘색', '#4aa3f0'], ['금색', '#f5a524'], ['분홍', '#f0577e'], ['보라', '#9b7bff'], ['크림', '#fff1d6'], ['남색', '#2b2a4a']];
+    var words = ['일단 시작!', '천천히, 정확하게', '오늘도 LEVEL UP', '물 많이 마시기', '칭찬 한마디', '퇴근길 산책'];
+    var stars = function (count) { return '★'.repeat(count) + '<span>' + '★'.repeat(5 - count) + '</span>'; };
+    var fortune = pick(fortunes);
+    var color = pick(colors);
+    document.getElementById('fortuneDate').textContent = '오늘의 운세 · ' + today.getFullYear() + '.' + String(today.getMonth() + 1).padStart(2, '0') + '.' + String(today.getDate()).padStart(2, '0');
+    document.getElementById('fortuneGrade').textContent = fortune[0];
+    document.getElementById('fortuneText').textContent = fortune[1];
+    document.getElementById('fortuneWork').innerHTML = stars(2 + Math.floor(random() * 4));
+    document.getElementById('fortunePeople').innerHTML = stars(2 + Math.floor(random() * 4));
+    document.getElementById('fortuneItem').textContent = pick(items);
+    document.getElementById('fortuneColor').innerHTML = '<span class="fortune-swatch" style="background:' + color[1] + '"></span>' + color[0];
+    document.getElementById('fortuneNumber').textContent = String(1 + Math.floor(random() * 99));
+    document.getElementById('fortuneWord').textContent = pick(words);
+  }
+
+  // 오늘의 점메추(카탈로그 03): 탭을 열 때마다 슬롯머신처럼 메뉴가 빠르게 돌다가 점점 느려지며 하나에 멈춥니다.
+  var lunchSlot = document.getElementById('lunchSlot');
+  if (lunchSlot) {
+    var lunchMenus = [
+      ['🍲', '김치찌개'], ['🍲', '된장찌개'], ['🥘', '제육볶음'], ['🍖', '돈가스'], ['🍚', '비빔밥'], ['🍜', '칼국수'],
+      ['🍜', '냉면'], ['🥢', '짜장면'], ['🌶️', '짬뽕'], ['🍣', '초밥'], ['🍜', '쌀국수'], ['🌶️', '마라탕'],
+      ['🍔', '햄버거'], ['🥗', '샐러드'], ['🍢', '떡볶이'], ['🍲', '부대찌개'], ['🍲', '순대국'], ['🍙', '김밥'],
+      ['🍛', '카레'], ['🍝', '파스타'], ['🍜', '우동'], ['🐙', '쭈꾸미볶음'], ['🍗', '닭갈비'], ['🍲', '국밥']
+    ];
+    var lunchComments = ['오늘은 이걸로 결정! 고민은 시간만 뺏어요.', '든든하게 먹고 오후도 LEVEL UP!', '이 메뉴라면 실패할 리가 없죠.', '동료도 같이 데려가면 행복 두 배.', '탁월한 선택입니다. (제가 골랐지만요)', '마음에 안 들면 한 번 더 돌려도 괜찮아요.'];
+    var lunchEmoji = document.getElementById('lunchEmoji');
+    var lunchName = document.getElementById('lunchName');
+    var lunchComment = document.getElementById('lunchComment');
+    var lunchRoll = document.getElementById('lunchRoll');
+    var lunchLast = -1;
+    var lunchTimer = 0;
+    var showLunch = function (index) {
+      lunchEmoji.textContent = lunchMenus[index][0];
+      lunchName.textContent = lunchMenus[index][1];
+    };
+    var finishLunch = function (index) {
+      lunchComment.textContent = '오늘의 점메추는 ' + lunchMenus[index][1] + '! ' + lunchComments[Math.floor(Math.random() * lunchComments.length)];
+      lunchRoll.disabled = false;
+    };
+    var rollLunch = function () {
+      clearTimeout(lunchTimer);
+      var final;
+      do { final = Math.floor(Math.random() * lunchMenus.length); } while (final === lunchLast);
+      lunchLast = final;
+      lunchComment.textContent = '';
+      lunchSlot.classList.remove('is-done');
+      if (motionPreference.matches) { showLunch(final); finishLunch(final); return; }
+      lunchRoll.disabled = true;
+      lunchSlot.classList.add('is-rolling');
+      var step = 0;
+      var steps = 18;
+      var spin = function () {
+        step++;
+        if (step < steps) {
+          showLunch(Math.floor(Math.random() * lunchMenus.length));
+          lunchTimer = setTimeout(spin, 45 + step * step * 0.8); // 점점 느려집니다
+          return;
+        }
+        showLunch(final);
+        lunchSlot.classList.remove('is-rolling');
+        void lunchSlot.offsetWidth; // 멈춘 순간 그림이 톡 튀어나오는 애니메이션을 다시 재생
+        lunchSlot.classList.add('is-done');
+        finishLunch(final);
+      };
+      spin();
+    };
+    lunchRoll.addEventListener('click', rollLunch);
+  }
+
+  // 카탈로그 메뉴: 첫 화면 맨 아래 버튼 세 개(업무 전략 · 오늘의 운세 · 오늘의 점메추).
+  // 누르면 바로 아래 카탈로그 창이 열리고 그 버튼의 면이 보입니다. 열린 버튼을 다시 누르거나 '닫기'를 누르면 닫힙니다.
+  // 창이 화면 아래로 넘치면 창이 다 보이도록 부드럽게 내려 줍니다. (세 면은 같은 칸에 겹쳐 있어 바꿔도 높이가 흔들리지 않습니다)
+  var catalogTabs = Array.from(document.querySelectorAll('.catalog-tab'));
+  var catalogWindow = document.getElementById('catalogWindow');
+  var catalogClose = document.getElementById('catalogClose');
+  var revealCatalog = function () {
+    var rect = catalogWindow.getBoundingClientRect();
+    var headerHeight = header ? header.getBoundingClientRect().height : 0;
+    var delta = Math.min(rect.bottom - window.innerHeight + 24, rect.top - headerHeight - 16);
+    if (delta > 0) window.scrollBy({ top: delta, behavior: motionPreference.matches ? 'auto' : 'smooth' });
+  };
+  var openCatalog = function (tab) {
+    catalogTabs.forEach(function (other) {
+      var active = other === tab;
+      var panel = document.getElementById(other.dataset.panel);
+      other.setAttribute('aria-expanded', String(active));
+      panel.classList.toggle('is-active', active);
+      panel.setAttribute('aria-hidden', String(!active));
+      panel.inert = !active;
+    });
+    catalogWindow.dataset.cat = tab.dataset.cat;
+    catalogWindow.hidden = false;
+    if (tab.id === 'tabLunch' && typeof rollLunch === 'function') rollLunch();
+    requestAnimationFrame(revealCatalog);
+  };
+  var closeCatalog = function () {
+    var opened = catalogTabs.filter(function (tab) { return tab.getAttribute('aria-expanded') === 'true'; })[0];
+    catalogTabs.forEach(function (tab) { tab.setAttribute('aria-expanded', 'false'); });
+    catalogWindow.hidden = true;
+    return opened;
+  };
+  if (catalogWindow) {
+    catalogTabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        if (!catalogWindow.hidden && tab.getAttribute('aria-expanded') === 'true') closeCatalog();
+        else openCatalog(tab);
+      });
+    });
+    if (catalogClose) catalogClose.addEventListener('click', function () {
+      var opened = closeCatalog();
+      if (opened) opened.focus({ preventScroll: true });
     });
   }
 
-  // 업무 전략 회전 카드: 가운데 카드가 지금 보는 전략이고, 나머지 두 장은 양옆 뒤에 떠 있습니다(끝에서 처음으로 이어짐).
-  // ◀ ▶ 버튼 · 번호 버튼 · 좌우 밀기(스와이프/드래그) · 양옆 카드 클릭 · 키보드 ← → 로 넘깁니다.
-  var strategyCarousel = document.getElementById('strategyCarousel');
-  if (strategyCarousel) {
-    var strategyStage = strategyCarousel.querySelector('.strategy-stage');
-    var strategyCards = Array.from(strategyCarousel.querySelectorAll('.strategy'));
-    var strategyDots = Array.from(strategyCarousel.querySelectorAll('.strategy-dot'));
-    var strategyStatus = document.getElementById('strategyStatus');
-    var strategyIndex = 0;
-    var dragX = null;
-    var dragY = 0;
-    var resetTilt = function (card) {
-      var face = card.querySelector('.strategy-card');
-      face.style.removeProperty('--tilt-x');
-      face.style.removeProperty('--tilt-y');
-    };
-    var showStrategy = function (index, announce) {
-      var count = strategyCards.length;
-      strategyIndex = (index % count + count) % count;
-      strategyCards.forEach(function (card, i) {
-        var offset = (i - strategyIndex + count) % count;
-        var pos = offset === 0 ? 'center' : offset === 1 ? 'next' : 'prev';
-        card.dataset.pos = pos;
-        resetTilt(card);
-        if (pos === 'center') card.removeAttribute('aria-hidden');
-        else card.setAttribute('aria-hidden', 'true');
+  // 땅 위 동물들: 닭 · 갈색 닭 · 토끼 · 고양이 · 강아지 · 오리가 마을 앞 흙길을 이리저리 걸어 다니다 가끔 멈춰 쉽니다.
+  // 동물을 누르면 누른 동물만 깡충 뛰어오릅니다. (움직임 줄이기 설정이면 걷지 않고 제자리에 있고, 눌러도 뛰지 않습니다)
+  // (인트로 애니메이션과 이름이 겹치지 않도록 critterTick · critterLastTime 이라는 이름을 씁니다)
+  var critterLayer = document.getElementById('critters');
+  if (critterLayer) {
+    var critters = Array.from(critterLayer.querySelectorAll('.critter')).map(function (el, index) {
+      return {
+        el: el,
+        x: 0,
+        dir: index % 2 ? -1 : 1,
+        speed: Number(el.dataset.speed) || 22,   // 화면 픽셀/초
+        hop: el.dataset.hop === 'true',           // 토끼는 걸을 때도 콩콩 뜁니다
+        walking: true,
+        timer: 1 + Math.random() * 3,             // 지금 상태(걷기/쉬기)를 유지할 남은 시간(초)
+        stepClock: 0,
+        jumpStart: -1,
+        jumpDelay: 0
+      };
+    });
+    var layerWidth = 0;
+    var placeCritters = function () {
+      layerWidth = critterLayer.clientWidth;
+      critters.forEach(function (c, i) {
+        c.x = layerWidth * (0.06 + 0.88 * (i + 0.5) / critters.length) + (Math.random() - 0.5) * 60;
       });
-      strategyDots.forEach(function (dot, i) { dot.setAttribute('aria-current', String(i === strategyIndex)); });
-      if (announce && strategyStatus) {
-        var active = strategyCards[strategyIndex];
-        strategyStatus.textContent = active.getAttribute('aria-label') + ': ' + active.querySelector('.strategy-title').textContent;
-      }
     };
-    strategyCarousel.querySelectorAll('.strategy-arrow').forEach(function (arrow) {
-      arrow.addEventListener('click', function () { showStrategy(strategyIndex + Number(arrow.dataset.step), true); });
-    });
-    strategyDots.forEach(function (dot) {
-      dot.addEventListener('click', function () { showStrategy(Number(dot.dataset.index), true); });
-    });
-    strategyCarousel.addEventListener('keydown', function (event) {
-      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-      event.preventDefault();
-      showStrategy(strategyIndex + (event.key === 'ArrowRight' ? 1 : -1), true);
-    });
-    // 좌우로 40px 넘게 밀면 넘기고, 거의 안 움직이고 누르면 그 카드(양옆 카드)를 가운데로 가져옵니다.
-    strategyStage.addEventListener('pointerdown', function (event) {
-      if (event.button !== 0) return;
-      dragX = event.clientX;
-      dragY = event.clientY;
-    });
-    strategyStage.addEventListener('pointerup', function (event) {
-      if (dragX === null) return;
-      var dx = event.clientX - dragX;
-      var dy = event.clientY - dragY;
-      dragX = null;
-      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) { showStrategy(strategyIndex + (dx < 0 ? 1 : -1), true); return; }
-      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) {
-        var card = event.target.closest('.strategy');
-        if (card && card.dataset.pos !== 'center') showStrategy(strategyCards.indexOf(card), true);
-      }
-    });
-    strategyStage.addEventListener('pointercancel', function () { dragX = null; });
-    // 가운데 카드에 마우스를 올리면 게임 카드처럼 마우스 쪽으로 살짝 기울어집니다. (마우스가 있는 기기에서만)
-    var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
-    strategyCards.forEach(function (card) {
-      var face = card.querySelector('.strategy-card');
-      card.addEventListener('pointermove', function (event) {
-        if (card.dataset.pos !== 'center' || dragX !== null || !finePointer.matches || motionPreference.matches) return;
-        var box = face.getBoundingClientRect();
-        var x = (event.clientX - box.left) / box.width - .5;
-        var y = (event.clientY - box.top) / box.height - .5;
-        face.style.setProperty('--tilt-x', (x * 14).toFixed(2) + 'deg');
-        face.style.setProperty('--tilt-y', (-y * 12).toFixed(2) + 'deg');
+    // 처음(인트로 중) 화면에 안 보일 때는 폭이 0이라, 보이기 시작하거나 창 크기가 바뀌면 그때 자리를 다시 잡습니다.
+    var syncLayerWidth = function () {
+      var width = critterLayer.clientWidth;
+      if (!width || width === layerWidth) return;
+      if (!layerWidth) { placeCritters(); return; }
+      critters.forEach(function (c) { c.x = c.x / layerWidth * width; });
+      layerWidth = width;
+    };
+    var drawCritter = function (c, lift) {
+      var w = c.el.offsetWidth;
+      c.x = Math.max(0, Math.min(layerWidth - w, c.x));
+      c.el.style.transform = 'translate3d(' + c.x.toFixed(1) + 'px,' + (-lift).toFixed(1) + 'px,0) scaleX(' + c.dir + ')';
+    };
+    critters.forEach(function (c) { drawCritter(c, 0); });
+    var critterLastTime = 0;
+    var critterTick = function (now) {
+      var dt = critterLastTime ? Math.min(0.05, (now - critterLastTime) / 1000) : 0;
+      critterLastTime = now;
+      var still = motionPreference.matches;
+      syncLayerWidth();
+      critters.forEach(function (c) {
+        var lift = 0;
+        if (!still) {
+          c.timer -= dt;
+          if (c.timer <= 0) {
+            c.walking = !c.walking || Math.random() < 0.3;
+            if (c.walking && Math.random() < 0.45) c.dir = -c.dir;   // 가끔 방향을 바꿉니다
+            c.timer = c.walking ? 2 + Math.random() * 4 : 1 + Math.random() * 2.5;
+          }
+          if (c.walking) {
+            c.x += c.dir * c.speed * dt;
+            var w = c.el.offsetWidth;
+            if (c.x <= 0) { c.x = 0; c.dir = 1; }
+            if (c.x >= layerWidth - w) { c.x = layerWidth - w; c.dir = -1; }
+            c.stepClock += dt;
+            if (c.stepClock > 0.18) { c.stepClock = 0; c.el.classList.toggle('is-step'); }
+            if (c.hop) lift = Math.abs(Math.sin(now / 160)) * 6;
+          } else if (c.el.classList.contains('is-step') && !c.hop) {
+            c.el.classList.remove('is-step');
+          }
+        }
+        // 점프: 0.5초 동안 포물선으로 떠올랐다 내려옵니다
+        if (c.jumpStart >= 0) {
+          var t = (now - c.jumpStart) / 500;
+          if (t < 0) { /* 아직 차례가 안 됨 */ }
+          else if (t < 1) { lift = Math.sin(t * Math.PI) * 26; c.el.classList.add('is-step'); }
+          else { c.jumpStart = -1; }
+        }
+        drawCritter(c, lift);
       });
-      card.addEventListener('pointerleave', function () { resetTilt(card); });
+      requestAnimationFrame(critterTick);
+    };
+    requestAnimationFrame(critterTick);
+    // 동물을 누르면 그 동물만 깡충 뜁니다
+    critters.forEach(function (c) {
+      c.el.addEventListener('click', function () {
+        if (motionPreference.matches) return;
+        c.jumpStart = performance.now();
+      });
     });
-    showStrategy(0, false);
   }
 
   var intro = document.getElementById('intro');

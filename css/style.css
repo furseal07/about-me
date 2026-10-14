@@ -24,6 +24,8 @@
   --rose-ink: #c4365e;
   --sky: #4aa3f0;
   --sky-ink: #1f6fb8;
+  --violet: #9b7bff;
+  --violet-ink: #6a4fc9;
 
   /* 픽셀 구름 그림 두 장: 페이지 배경과 인트로 배경이 함께 씁니다. */
   --sky-clouds-a: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='960' height='300' shape-rendering='crispEdges'%3E%3Crect x='80' y='40' width='40' height='8' fill='%23ffffff'/%3E%3Crect x='64' y='48' width='72' height='8' fill='%23ffffff'/%3E%3Crect x='136' y='48' width='32' height='8' fill='%23ffffff'/%3E%3Crect x='48' y='56' width='136' height='8' fill='%23ffffff'/%3E%3Crect x='40' y='64' width='160' height='8' fill='%23ffffff'/%3E%3Crect x='48' y='72' width='144' height='8' fill='%23d4ebff'/%3E%3Crect x='500' y='120' width='30' height='6' fill='%23ffffff'/%3E%3Crect x='488' y='126' width='54' height='6' fill='%23ffffff'/%3E%3Crect x='542' y='126' width='24' height='6' fill='%23ffffff'/%3E%3Crect x='476' y='132' width='102' height='6' fill='%23ffffff'/%3E%3Crect x='470' y='138' width='120' height='6' fill='%23ffffff'/%3E%3Crect x='476' y='144' width='108' height='6' fill='%23d4ebff'/%3E%3Crect x='785' y='30' width='25' height='5' fill='%23ffffff'/%3E%3Crect x='775' y='35' width='45' height='5' fill='%23ffffff'/%3E%3Crect x='820' y='35' width='20' height='5' fill='%23ffffff'/%3E%3Crect x='765' y='40' width='85' height='5' fill='%23ffffff'/%3E%3Crect x='760' y='45' width='100' height='5' fill='%23ffffff'/%3E%3Crect x='765' y='50' width='90' height='5' fill='%23d4ebff'/%3E%3C/svg%3E");
@@ -118,6 +120,38 @@ img { max-width: 100%; display: block; }
   background: var(--bg-panel);
   border: 3px solid var(--border);
   box-shadow: var(--window-inset), 6px 6px 0 var(--drop);
+}
+
+/* 경력·학력 탭: 한 화면 보드. 왼쪽에 경력 → 경험·교육·인턴, 오른쪽에 학력 → 자격증. */
+.career-board {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  grid-template-areas: "career edu" "train cert";
+  grid-template-rows: auto auto;
+  gap: 14px 18px;
+  width: min(100% - 48px, 1180px);
+  margin: 16px auto 28px;
+}
+.tab-panel[data-panel="career"] .career-board .section { max-width: none; margin: 0; padding: 15px 22px 16px; }
+.career-board .section-title { margin-bottom: .6rem; }
+.career-board .timeline-item { padding-bottom: .9rem; }
+.career-board .timeline-item:last-child { padding-bottom: 0; }
+.career-board .timeline-item p { font-size: .88rem; line-height: 1.6; margin-bottom: 0; }
+.career-board .timeline-date { margin-bottom: .15rem; }
+.career-board .timeline-item h3 { margin-bottom: .2rem; }
+.board-career { grid-area: career; }
+.board-education { grid-area: edu; }
+.board-training { grid-area: train; }
+.board-cert { grid-area: cert; }
+.career-board .item-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.career-board .item-card { padding: .6rem .9rem; }
+.timeline-rose .timeline-item::before { background: var(--rose); }
+@media (max-width: 860px) {
+  .career-board { grid-template-columns: 1fr; grid-template-areas: "career" "edu" "train" "cert"; grid-template-rows: none; width: auto; margin: 20px 14px 32px; gap: 16px; }
+  .tab-panel[data-panel="career"] .career-board .section { padding: 20px 18px; }
+}
+@media (max-width: 420px) {
+  .career-board .item-grid { grid-template-columns: 1fr; }
 }
 
 /* =========================================================
@@ -613,7 +647,8 @@ img { max-width: 100%; display: block; }
   font-size: .7rem;
   color: #fffaf0;
   text-shadow: 0 2px 0 #5a3a1c;
-  padding: 3rem 1.5rem 3rem;
+  position: relative;
+  padding: 1.9rem 1.5rem 1.1rem;
   border-top: 3px solid var(--border);
   background:
     linear-gradient(#8fd88a 0 8px, #6cbf6e 8px 16px, #4e9e55 16px 20px, transparent 20px),
@@ -653,11 +688,8 @@ img { max-width: 100%; display: block; }
   position: relative;
   width: 100%;
   max-width: none;
-  min-height: calc(100vh - var(--site-header-height));
-  min-height: calc(100svh - var(--site-header-height));
   display: grid;
-  grid-template-rows: 1fr auto;
-  gap: 36px;
+  gap: 24px;
   padding: 48px 40px 24px;
   isolation: isolate;
 }
@@ -835,10 +867,11 @@ img { max-width: 100%; display: block; }
 .hero.is-summary-prepared .hero-summary-item { visibility: hidden; }
 .hero .role-stats .stat-badges:not(.is-active) { pointer-events: none; }
 .hero .role-stats .stat-badges:not(.is-active) > li { visibility: hidden; }
-.hero .role-stats .stat-badges.is-switching > li { animation: hero-summary-reveal 240ms steps(3, end) both; }
+.hero .role-stats .stat-badges.is-switching > li { animation: hero-summary-reveal 460ms cubic-bezier(.22, .8, .24, 1) backwards; }
 .hero .role-stats .stat-badges.is-switching > li:nth-child(2) { animation-delay: 70ms; }
 .hero .role-stats .stat-badges.is-switching > li:nth-child(3) { animation-delay: 140ms; }
-.hero.is-summary-prepared .hero-summary-item.is-revealed { visibility: visible; animation: hero-summary-reveal 240ms steps(3, end) both; }
+.hero.is-summary-prepared .hero-summary-item.is-revealed { visibility: visible; animation: hero-summary-reveal 460ms cubic-bezier(.22, .8, .24, 1) backwards; }
+/* backwards: 나타나는 동안만 애니메이션이 적용되고, 끝나면 원래 모양으로 돌아가 마우스를 올렸을 때 살짝 뜨는 효과가 그대로 동작합니다. */
 @keyframes hero-summary-reveal {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
@@ -871,48 +904,189 @@ img { max-width: 100%; display: block; }
 .portrait-backdrop::before, .portrait-backdrop::after { content: ''; position: absolute; width: 22px; height: 22px; }
 .portrait-backdrop::before { top: -1px; right: -1px; border-top: 2px solid var(--mint); border-right: 2px solid var(--mint); }
 .portrait-backdrop::after { bottom: -1px; left: -1px; border-bottom: 2px solid #b5a178; border-left: 2px solid #b5a178; }
-.hero-scroll {
-  justify-self: center;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 2px;
-  color: var(--ink);
-  font-size: .8rem;
-  padding: 6px 16px 4px;
-  text-align: center;
-  border: 2px solid var(--border);
-  background: #fffaf0e6;
-  box-shadow: 3px 3px 0 var(--drop);
-}
-.hero-scroll:hover { color: var(--mint-ink); }
-.scroll-arrow { font-size: 1.3rem; line-height: 1.2; color: var(--mint-ink); animation: scroll-hint 1.8s ease-in-out infinite; }
 @keyframes scroll-hint { 50% { transform: translateY(5px); } }
-/* 업무 전략 구역은 첫 화면 바로 아래에서 시작합니다. (화면 높이만큼 비워 두지 않아 스크롤하면 곧바로 보입니다) */
+/* 카탈로그는 첫 화면의 경험 분야 + 요약 창 바로 아래에 붙어 나옵니다. */
 .work-values {
   position: relative;
-  max-width: 1120px;
-  padding: 56px 40px 160px;
+  max-width: none;
+  padding: 0 40px 24px;
 }
-/* 업무 전략 아래쪽 언덕과 꽃밭: 화면 폭 전체에 깔리고, 바로 아래 푸터의 땅과 이어집니다. */
-.work-values::after {
+/* 모든 페이지(소개 · 경력/학력 · 스킬 · 연락) 맨 아래 아기자기한 마을 도트 그림(옆에서 본 평면 2D).
+   진한 테두리의 도트 그림으로, 왼쪽부터:
+   ① 파란 지붕 · 분홍 지붕 오두막(창문 덧문과 꽃 화분), 빨간 우체통, 하얀 울타리, 사과나무, 꽃 덤불
+   ② 풍차, 울타리, 초록 지붕 오두막, 빨간 · 파란 버섯
+   ③ 종탑 · 시계가 있는 분홍 지붕 예배당, 벚꽃 나무, 가로등, 벤치
+   ④ 줄무늬 차양 빵집, 우물, 보라 지붕 오두막, 노란 꽃 덤불
+   ⑤ 빨간 지붕 오두막, 수련이 뜬 연못, 노란 지붕 오두막
+   동물들은 그림에 넣지 않고 아래 '땅 위 동물들'로 따로 걸어 다닙니다.
+   굴뚝 연기 · 나비 · 꽃밭 · 앞쪽 흙길이 곳곳에 있고, 뒤로는 부드러운 언덕 두 겹이 깔려 있습니다.
+   640×64 도트 그림을 넓은 화면은 3배, 그 외에는 2배로 키워 가로로 이어 붙이고, 바로 아래 푸터의 땅에 붙어 있습니다. */
+.tab-panel { position: relative; padding-bottom: 204px; }
+.tab-panel::after {
   content: '';
   position: absolute;
   left: calc(50% - 50vw);
   width: 100vw;
   bottom: 0;
   z-index: -1;
-  height: 120px;
+  height: 192px;
   pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='480' height='120' shape-rendering='crispEdges'%3E%3Cpath fill='%23b3e3bd' d='M0 120V70H40V60H80V50H140V58H180V66H240V56H300V44H360V54H420V64H480V120Z'/%3E%3Cpath fill='%238fd88a' d='M0 120V92H60V86H120V80H200V88H260V94H320V84H400V78H480V120Z'/%3E%3Cpath fill='%236cbf6e' d='M0 120V96H60V90H120V84H200V92H260V98H320V88H400V82H480V120Z'/%3E%3Crect x='48' y='100' width='4' height='4' fill='%23fff7c2'/%3E%3Crect x='212' y='104' width='4' height='4' fill='%23ff9db5'/%3E%3Crect x='336' y='98' width='4' height='4' fill='%23fff7c2'/%3E%3Crect x='436' y='94' width='4' height='4' fill='%23ff9db5'/%3E%3Crect x='150' y='106' width='4' height='4' fill='%23ffffff'/%3E%3C/svg%3E") 0 100% / 480px 120px repeat-x;
+  image-rendering: pixelated;
+  background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAABACAYAAACKusa+AAAcsElEQVR42u2de3QURb7Hv5Eoj2QkyGvBFwZFlqysa2LggmejiCxEvAjuJShJAHVJxKDgQmQ5EI6BzcWggIBseClEReFc2HUXhYtelF11FQEVjSIChoc8AoGBEAgv5/4x6U51Tz+q+jHTM/l9zslJTXdPp7t+9fvVt35V3QEIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgiAIgvAA3ZLTA0dKVwaOlK4MdEtOD1CNEARBOM8VVAUEQXhJ/G3KHyd/3pQ/DiQCCYIgSAASBNFIxB+JQIIgCBKABEE0QvFHIpAgCMId4qkKCILwAu3HZRofUDaXKokgCMIhKANIEARBEARBApAg+OmWnO7Kk5o03UcQBEEQJAAJj4q/oiHNUbFzo6OCTTovicDGSe/b71D8EARBEM5DawAJmUPnqoQFV9+UgQAGoWLnRqR07Rd4v2Kd6Xc6Nm8XZyb+skreRvHafmSURsp7C7sCAO4bs5MqoxEOLL/duyUuEn/71Z2BwKiucXHSb7IGQQKQaBRir7rOL3yeVdteR1ZqNisCsWrb65aEZt+UgZDEX0rXfohUJ0BEnnALPyuDHzsYDYIau/ir2PPZtpTOPSIiAo/8+H3wReQ/fk/GoH4x5n3f0wIwEAhsjYuLS6Nm6Q2x55QI1PrbWanZCvFXn0kMUEdJRJs/ONHRNNZ2/+3eLXEpnXtEbOnHnwZ0jav/TY4SY/07j7hzOg786uA4fHPdXPm30XVEwuc9LQBJ/EVP52YlE6gn/lZte12+ZvX9kCCMfT7+cntMiT0rHQ1PZxXLvhDJLCBh3i6daHtO9e+8WbtI+P33lWeQNSgba19qBlxnfB1a9+G2j3t+CpiygNHTuVkRgVriz+h+9JzEn1UUSFpVLP+m1kE+4RWx54ZAFOn4vEhw7TDArhlmO7uUzj1SSfyFp8+w0i6dansdmrXddrjuWKrbvhIpLt61FKu2ARct3ofbCRDPC0ASf97OZPCIQK1jeMSfiJPsHvIcuiWnB3afrsahc1VhmzqmAYoLXNlSFUVPxbzgi7WOz2zQ92r/eFkISn5/6FxVoG/KQCn7l8raNlqznZGKD3oCzak24+B5UkFw17PTgtATTiW97kM94mtsnavRqCragj0r7nr/4UPFPv+/SgBAWPyJ0LpZkuZ2mkL2Jt2S0wMVOzfKAjClcw9U7PlMIQCZtaGNUvDFAlmp2SjpfRn+cxeR1PxKAMDkj5swA0ftwaKWP5MvR0dyQLKrOsb/KumWbd/4fyAB6GA/J+oTEXegbsnpgS7Dg4Jg1xuT8e3eLXFa73/Tmg6I5imQWBrRm4nA8qaLQvblns9zTfxZEYa8SA526FxVwInpCyeIhY5QLQABNIhARgCGs60QzscDKfOnZtSGSxg59vGQ7cvnL9W1uddFoRsJjGiZCWJtvqB7AgCgYEetqdAnwisII+os3ZLTA78Zu1yx7Yv5I3UDgROjf62nctwc5TT2gN/p4XLkns9TiMDc83koXnsuqupLsu/7Fevk9UteCWC8otbLQlFLAMqQAIyJWKDO/LFlIJgJLJnREPsnT1kqbO9IiUJ2Fos3gWFF8EVTkiArNRt/7dVGsW3wJ8eFhT7hbN/A+kO8k0/1iDpMl+ElqD5QgWYJrQAAdbUn0WV4CZbPn6wZCHga/9aDW+Ry2nXpIfu1nspxoqFvyh8HAOiTmk0NmRF/AFDedJEsAqXfnR4GKt/MtWXLcN7LkGXBgXzflIGaASwrgnbn7RS88mSp1nUoRLXBmr9w45U2GO2xIJj5i0cHX1N5O1sGgFf7A4dd8AWpvf3v7o3ytlG3ZTvWzrslpwfGPxxcrjDnzR4BbYED0yeaoy27Z2bzBd0T8E31KbRqehUA4OT5C1jQPQEF85faFvrkl/b9AQDinX6qh4e+KQMhZf4Srukob5fKwX0fufK3RZ7K4W3o5VnZ+OrgXrROuBrlWdkRFQNepbzpIrT5oD/K79kQdYHs3pJbcfj7KrRIao57S27F8sn2A5hXhWI44oD6OtgBlBGb8sdFbIA1a9A8AEDF2rdC9tV+ux/pUwoB0AyAlv+U9L6M76rqNDN/IeUIdIJ2Bj/dktMDuZmrse/wNiS2aIPczNVYPn9oSHxgxZ/bD2h4weZS5u/axObydqn8117N8Z2Hr9+r4tKpWUa2ncWHu/FlpWZDK/MXUm6v/f0LgVrdc18VlxB2g0gd13Wt2niio/IquefzUH7PhpDpYC87OZv5a9neJ28fsizNMFURzaNTt+KAXp1kpWZj9QPDcPynI3ouL3P8pyNY/cAwDFX5ltv1PWvQPE3hJ4k/ANgyoxQAkE5+r7CtWeZPXT4cpms7fO6nkG3bTnwR6ND8WqFEhpT5a93yRnl7cNsSXcEZyw8u6WX+tMpOYaQJvKIVnKjXNZOaAAAecjDGxBv9wex1A0K2f7t/D7aP2WXpArJSsw0zf8ryXk0jH649qnv+DgntDRuGXaOzHc2sQfMUmT8AqK49LZcbeyZQWuxb8dVKrHruMWRNW4bfVR8CMB1YEFwDqK4bI0eW9oXLcdWZPwA46z8nlwlnB1AAcHTuu4bHt7n2F64PsNRtMET8HTgKXN9eIf5YtswoJREIC5k/qbx2AbMusIlrgsCoH+ERDFmp2WAzfwBw5uxxudw2TAMrr9ncKPPHlk87KPZEbamlFZzqW9zSTZ/Pbri2z2cDdzoUY+JFbwIA7ljYRVjccGf+6svLTyQLG/lw7VG0TWqDnft+QNcbbwn5jlNGnzVonmbmjy2LdlSRzBplpWaj7aR2wQC834+LKy841oFJ4o/ldwXTAUyVU9qvbV2kaWMtW2rZ0OkRnl7mjy2HLVURw52FlPmzglYm0IksAdsGCzOKQjN/KvGX4GuK2przjUoEmsUqK5k/rfKr/c3X1ooIAjaeiApDNu7kpOVpZv7YcrT5ot34L5L5O3n+AlqtftOS30r24bGl6ACAt2+xIv7s6KY1k5rgi901aH11cGBUffoi1ky60pFMYLzRTTw6+T28UnKf4iYkRG5GLPOnLAPBNYGFGSNRurmY66b0GgWv0Y3Eg1nmT12O9Uyg0dRe0ZDmIeJPonjtOcV7APVsq7Yl72hPxJnZIJOTlmeY+ZPK/3fFvxTb9QSG+twAQoLE6wPXB8VyhNuIJMjVoidlyDDu6+MRWrxr/syQBlgT337K9O9byRJoZf3UmT+1+HNSSEXK/nbap+XMn065pHfwnNIg0a5d7QqGwowiw8yfVK7+pB+zfWlUxO9wZP7UZSC4JnBwfR+pJ/ictKWZjSVxeU+3uxTXY6QLRHXTxLefMvV5NvN3Q7tm8naprM4EWokncV+f3BXgVbAvlO3FhHxlZs4srSll/oyyfbzlXW9M5haBdtATDzlpeZY7rj5lc0OCGNugItUZsKM/aQQIgHsUqHXd7Eugcf54w7mrD8nl3n0mAACXCHQL9QiyMKNIzvyJsvaxrYrr1zq3kW/x+JLb7UDvAQeJ9CmFiuvTEls5aXmo2PT7BvHY53/ketm57we8kvsaVj8wzNFrH/qPt/BoeY6jHYJm9g/a075aHD94BJllsxU+r+5AJN+ZNWieaxl4p7IXbPtkfb77tSkK2+u95w8A0p8vN7yGLc/qvxVg1IZLCv8qzCjSbWduUZhRJGf+RJnzZg9PJgHsxn8p82eY7eMsF+yoDXsfYEcXSP7slm5aM6kJqk9fVGT+tMoPzbwc4pe8GiJeRMGqb8IsE2gn86f3dLBIJtDuSEDt/CKZP3W5PCsbOWl5imvXE5paHaudKc1wicsLgVrkpOUpRF3FVyt1jy/dXIzCjCKw/zYunAFALdB4Mn965XtLbkVhRpF8/aLiz8yX3LSlQvwZrHGTpjb1puwVtPstUPXPkPqe3bMPDh6rctSOs3v2wSWHswFaiIg/rVjC+rvba1lF2gkb+5/+4g289JvhptkLrcyYWeZPuopdr+Xiuu634+COLwEAXXKCwvC7qjO63y3pfaXCv4zamVvijyfzp1fOzVyNrNShlkSgl59KtZr503s6eLCWjT2C1pKynLQ8V3STUeZPXZYygaxf8qI5XNNLX2px7Ei1pnDJScsTWvPHW+4yvASFGZPD2kgKM4pM1/zxlDflj0MfpoGzDcpo7aKRWLS71o0d/bFc+chVhmJEL/vDij+W5T91BtAZDzb7l6dEoDrzp7fmj6c8ZFmadielgZFv8U47uALHGjeuaTedTvmZTzcBAOSXPttEameluDvs4k+rbljxZ9SBSP7MZv94fc/pQRuLWvwtqv4Uea17Ko7RWn9VcFstDtWv7D978bK8nS2zSOKP5ezFy7rfPXvxMgpu429nrG8bZSXVmUWzzJ/emj+e8viHP0NWao+I2FWLnLQ80/ivN/Wek5YntuaPs7ygewIKPCwCjeKgFd2ktlNOWp7mmj+z8ppJTfDQoHmyCOR9ADZer6FYEX9shXQcMAZnThwMjoLON/wNJ8odB4wJqziwk/lTl8uzspGr08DtLk4WEQ1G4k+rIzJbjPtK7msh07lBYWdOJEWg3cyfuqzOBGpl/4x86/qi1opMsd2FyVayf0Zr3N7NfwaZBgG6U9dOuH/MVsVnLVv7jx9y7B7cbit6mT8R8aflz1riz00RqDdoU2f/2PapFn/XF7XWHOQs+DoYc77+cJ7pdUgZPzV585fpfue2u5+qF/p87YxH/AHAq/3jMcqgPdvN/KnLUiZQS1jxxG0rDzPp3RdP/FfPWklM6hyHg7Vng35w6VKDTzhQntQ5ev+zpahuUj90JpL5Y8tyJnDQPJRuLuZ6ABYA4rUaitZNsPPY7A3oNbhD6xcGR/oGU4CWRvy/fqS+BYZHIMy4rx/2nwhOWdWer2torDbKM+7r59ooxA3RoBb3IRljHfHH2n7ktXsUawA/3vQCemdMkINLpERg6tgO8B8Opi4unGt4PbidcurYDpYCBI9faXUGVrKEmh2JSvyp4RE4lTsr5Q5ZKmuR1KZhicfG/S3R7wa+//4hcqyb4k+rbm785Y3Y990+VzM5RrY2exDJTBSoxR9P+1QL+5ozZ/X/wJn9tuqCjQdm7YxH/PGIwMxez+O4/0cAQN2FGnm7nXJmr+ctx21bDzM5yMw9wUcHvvr3YkfP++v/GK0Q+tEu/sx0E9terWT+1OU1k67EQxptWa/dxPN2UOxNrPjbKYx4sCVXVqemptbxig5nenjKe8GpqgrV/yG2LGDr/+VV6ZS7XLtmo9epSJ2B2eiPHQUaBZ3CjCLHHuSIhAjcNv+wo4FMCmBZv7cv/rSw82ocs4BgV/wpbcjnqxv3t+QWdiLHuiH+zKZ8RcSf1QyMka1FlpQ4MThR388nd/YHnvsQLd96Tt5+atg0uWxn+yd39kcvpmMza2e84o89/pjG9nc/edbRRIaUwLgbxdzizu4rTzTPKRD/jQV/dPfvbmf+eHXTi49eQGX90uiauoasqJXyi48ClzmvO97oJtRPr0hBwEz8sfh8wRHr0b9sAcY+jPbNgOXfAwP+/ibaP6G9oFXkWLdpELJnorqBS8FDCjLHZlaZBoKLKy8EC3nuiz89EfjO0U/DY18HA5lWPTgh/tS2dDIrYLTGLcHXFMcdrveGKeCWGtv0EDnWvg3TMwrl//ABiE35ZpbNNvQHqx2wiK1FBINW+5TW/y2q/hRDcAuiiVEbgp3iyJ7AcoMQwu4v/VN4EhlW4qTTrzxxIv4DgC8x2L+PXHkVXsz/pdxnv7/+Oyx/5IJ2nQscG43iz4pu+uMrVzmSaJITTCP4jr+CbZTbx+zSVK9GndSB4mruBr1eYHaE59i0scUhP/f757liZJ8vET5fIkorXsBZ303wtb0Ja07chNKKF+R9PMd4CZ4MhBluvMKldHMxiteeC3mQxE18iQnwJSbg2LQ/40LHXmiV3AtvX+yFY9P+LO/jOUbrXqT3qPGIPxF/cqqupff8scJPEjzHDx5RZLbMhA0vSW06KqaB2W1JbTpiyYTHsWTC44ptZt8PJyLr/fQ6YKkTNuqA5U7YRfur2+ei6qAiymvdE8eOVGPIxVsi1j6dEFl9k/3yzxtvFCs+84oyny8BPl8CmnzwEM626g5fh+5Yc7o7mnzwkLyP55hYi/9u9u/RgFO6SSrX1Jyx9SM6wLjC7Gbsir+amlrd0ZO0T/0jep5ww9N4Y6WBm4oHl6ZpSzcXR6yjCYd9jx2pFs78hQtJ+NkVOVaZNTJTsxyJ9p0+pVBY/PGKZKc7YKeQhJ+V9umblYmfDwSfmD01bBr+1vYjAMDf2n4kb//5wGfwzcoMOX7F2Hvl87ScslX+/POBz9Dr8w2W48H7e5PkH63PFP+tU3OmVnf2RNqn/hE9TzSKQKu6SUoUjdlepEgijdlexLVPlHitmynMKMIdC7sYBgDekaA06lm7fykGT9uJFW0/wsi8Zlixvw4jfMF1V7Pygi8Anbio3PRYM45O9QPzXWjoBlPANTVnUDYu+Bb9/LmvC3/fi6M/3k4oGtdr6AUgo31Lp04EADw+fZbw91mfshIYCjOKsKl76JqmPjsuyefulB/6ZGVlWS6XfdTTnXoCx6nsH9AwhZve4hCzzf6xrohAjrpxWvyFUwTabZ/SOXplFOFrZCpEXk795xxmOwC8OOkZoAnwR2Z7TmGJfL6fkYmcwobjnbpHvc/m8T/o30109pVNeCIY/1/4i+4xsRj/pVmP+/YU4MFpd8l9dtyeOvgSZwMA5owPvrVj/JyFpsdGczLESd0kDSJG3soMjB97MFjITQ7ZZ5V4o5u5vqi17ZuQGPHfQQE3Arn1n6EQf1J54qJy3WNFuL99T3kKUXqgQKSsXnsmqeub1+zEg8emNYjTNXUoW5ItH1c2Lhs3X9Ms5BhfT3vTv1KwkoK0hDTyELWHU2tA9K6VZ9G0+klgN+xoZFOtQPb3pDoMnsbYLqkOVfXiDwCWTp2Idtc0CzlmeGICdwek9qsDxdW6NpTEX/u/foyjg3sr9m3qHo8+9eLvnYm34v5Z3yv2d8ovR2GGmAgEgq96UYsap8W+yPRtJKd6zerGah256X92BZJI+wwdCJ01PWbxjCly+cVJz2D0lBmu319hRhFG9gTemx/8LSL+2ETGin/fgMF/Z3z/3zeg6p0nGuL/hCfQ7prQY0b8Z0JY43u429/wqcH2PxxDcAnA8KlQiD+pPH7OQt1jox0ndJPVRJHV78Wb3czIng2HHKw6jvf3Jgk1Rp6Rj//0WSRd3UJ4pNRnh/ZCXzcfIR8x6616cVpQ/zmozNl70DrGbvBSBwYJaXuhhZdn8kxBObEGiRX5APCHkpmedWKt4DRn/BiFfa0GMMmn7t14SuFTB6DvU1LmTy3+JEEoZf7U4k8ShMH9lULXt/rLeYrrA5KiLtMr0sHzCmQAyHQgJopkoIzeT6clFpx4Cl+kfYYOpFpwHcf6E+93vIBWcmJWXq4y/gsmMNyK7+GI/zzTtor+PUqneUV9yGqMkBJNfdcdUiSR4tbVYVd9PWrt82VYSzDFu10hogtfRY4XfeWEHUQUtpPTvUbBYcGrySgYtVcOFIVR8gZ1LyISmMIZxL7y67Sle34NADh18BvN3Xc9zW5P9Fx9izzFa+WJ31fG3cx97PEI3D/va2C0fFovJlAMUNbRuKcycWOnTpgzFNhXWYkbO3UCECzPGaosjzepN5HEhMixRvH9tWtPIOenazxtW19igqvHN1bUSaSqEw/K+6pO1KHl8gJHEkzxXrrpJ0cnOXauo4cqsWnTYstl9UIO3gWWT45OQguXnvZlBR8ARdnp0R/bCUUSu3Y0sqmVwPTk6CRcFcYgNn5/MzkLmLSgITPnLwj+Z4ST60rlLODaRxrE4pCVwTZYWZYLTPSeIHB7CvjRubv5B5KDw3//Vv3PSDB4QSjwTAGr/Un0OxEROj7++NDC4tO+rOADoCh7pf15pX+P2UQER/LoydFJjiWZNAXgkvWL8YcBo7lOYHasyGjo5cV+5L/gTHalfcdOttaL4egRoXpg72FiD3t1pg7oZoJPEoZGHYMa9SsoRjL/8Un93qwlN4i1Byexa0e1Te1e78uL/Rg/x75fcIuTzcXoY/oQSK6th0Cc9nk36kGUoiHNLX3PretVn1fE/9g1WDw+rndMOO5NdDr35cV+/HFmC8frV2JfZaVQ2Yn4MHER//WyttITfJIw5LE9r41F25/eeUVmQ15e7Mfj02sdt3EsxDOpnfEkml5e7MfEZYmOXG+83hd4Gj57rN4fcXMK2M3M0ZKNynpwcgrYrM7Y+q276lzI9lXr70TWgM/lz1kDqoF6bbNkP995SzcXy9egtRZJEg48Nla3h8KZRY45hpsZQPZ6nZwCFqkzHkeVROB2DfEn7S/MyAUeWRgi/kTs5pTP87R1t6eAi9eeQ99kv+GrPqT9pU9bt5uIbdnzssJcy/9umXSd5jVwv5olxX6bFL23SKJ3b+y0r1nZKJ45OQXM1plWfN+QGof+2wLy5/5HAKBa065WbSy1ryXrF+OHmQd147/ZecM1BWylH4rksVbuzcl+k/d647olpweMTqK1mNFJ2PMHRx+XLJwjdNRiN1sk8hJiJ+5BD70nivSQntizUoe6I0BB1E8Amz0E0rvPBP1zOWRHUZu6aV+rPrX9nw0C747fjhHe7/b1sZj9L+CKnRt196nf/Tdx+bv6OsfAprwCMBL1Y9X/eOOB1Thg9/4+WWf+gBf7FDAArqeAew2cJNzOpDWAPAJw/DMLI9KHhSu+hzP+h6tv9DJWfejTT9/S3C69Zk5C73VzPXsOE7rOuCWVcwIgCIIgCIKIIuIvjQvr37sUPze26g8ADp9Sjio6tGwdM9v+69mTmDf5ZwDA1Cu2Y6nvPhw+VY3bN07Hl/2C7++Y2n06pu+YGrN1QNtoG22jbbSNtsXetrn46sAoXYHjry3AMn8+HksqQ1LCAtuCqd3V1TFVf3EFHzwVsxnAGWVJaLk0Gace34uWU7YCnYYClavxjw3v4IH8FfhH2Qg8MAHAmRVA4giM/fBpGlIRCubf/ZLcLmaUJWFKvj+4vc1ujD1+M1UQQXi8D5B8tt/Wl7Ax7WnyX5fjJFu3bP2HJ6Vl7el3Q6F4qShm7RbTAhAAvv7yO9x2+y+5ywTBBjVpcHBq2DTNwQR1Ig7VNdNp6IlutgMnCJEEwD/TnmsY9Pe/n/zXpTiJbxrq9tSMNLn+wyoCeYViDAs7bgH4yKrcwDXtkrgOPlHlBx3bcOzUpO4AgMRWv8CZk8b/I1TkmOn+HVS/ET72+Zv64czJIxj64SqsvjsLAELK7w5+2pLdeezbmGwxv81uudPAr97RFN1sB24kAnmvQfJdO36qxXT/DvKhCB/L2pb1Uz1f5rU767dkC+WxPMkVJ67BrT5XKy43BrvF1VauCzhVkc/+uNEVlaoO1m4Y384x4SSS984rXKzYl2wa2Xt307Y818MjtNWdtpft7qX27JZt9ewbq77stfsSSRjYtS3F59jsc+OOfrE0EG0V6RWqD1W6ct7WHTshWog1m7pt22iwb6wG8sbsu43BphSXqc9tDPZ10qZx374zJeD1CnTT6HZY2OK05naRVKwWY85e7cn7bUz2dcu2XrUv+S7ZNpZ9N1ZtS3HZGdueqPJjSuINjc62jj4E4paD6HXGRHgh+5JtybZkW7Iv+S4RG7aN+aeACYIgCIIgCCX/D6/890Z8AzN/AAAAAElFTkSuQmCC") 0 100% / 1920px 192px repeat-x;
 }
-/* 첫 화면 탭에서는 언덕과 푸터 땅 사이에 하늘 틈이 생기지 않게 붙입니다. */
-main:has(> .tab-panel[data-panel="home"]:not([hidden])) + .site-footer { margin-top: 0; }
+@media (max-width: 1699px) {
+  .tab-panel { padding-bottom: 140px; }
+  .tab-panel::after { height: 128px; background-size: 1280px 128px; }
+}
+/* 마을이 푸터 땅에 바로 붙도록, 어느 페이지에서든 푸터 위 여백을 없앱니다. */
+main ~ .site-footer { margin-top: 0; }
+/* 땅 위 동물들: 푸터 바로 위(마을 앞 흙길)를 걸어 다닙니다. 마을 그림과 같은 배율(넓은 화면 3배 · 그 외 2배)의 도트 그림이고,
+   걸음마다 다리 모양 두 장을 번갈아 보여 줍니다(.is-step). 걷기 · 쉬기 · 점프는 js/main.js 가 맡습니다. */
+:root { --vpx: 3px; }
+@media (max-width: 1699px) { :root { --vpx: 2px; } }
+.critters { position: absolute; left: 0; right: 0; bottom: calc(100% + 3px + 2 * var(--vpx)); height: 0; pointer-events: none; }
+.critter {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: calc(var(--w) * var(--vpx));
+  height: calc(var(--h) * var(--vpx));
+  background-repeat: no-repeat;
+  background-size: calc(var(--w) * var(--vpx) * 2) 100%;
+  background-position: 0 0;
+  image-rendering: pixelated;
+  pointer-events: auto;
+  cursor: pointer;
+  transform-origin: 50% 100%;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+}
+.critter.is-step { background-position: 100% 0; }
+.critter-chicken { --w: 10; --h: 9; background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAAlElEQVR42mNkQANaSmb/t2mwMDAwMDB43fjDcO3eKUYGLACnOi0ls//oCn9/fgLHMHli1THAOMgYJvb785P/X5eqoIgRUodhEzJ+4GWF4kJi1LHAvPD84XW4dyTlNXGGISF1LOiKsPFxiWNTx4gtwGEA3XXEqkMBX5eq/GcgAGBqsKllwmYQMYYyMDAwcEffYURXCwAUdMhiAB/46QAAAABJRU5ErkJggg=="); } /* 닭 */
+.critter-hen { --w: 10; --h: 9; background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAJCAYAAAAywQxIAAAAp0lEQVR42mNkQANaSmb/t2mwMDAwMDB43fjDcO3eKUYGLACXOiYtJbP/6IpfOggyvHQQZJifIcoAkydWHROMA8MwxYkzXjMwMDAwnG5+x6ClZPafWHWMMMXYgPiB93DvEKuOBSZ4/8EruAJFBTGcYUhIHQu6IlQ+IwMuw3CpY8QV4AwMDBiuI1YdCvi6VOU/AwEAU4NNLRM2g4gxlIGBgYE7+g4juloA2LB3RwilQ3wAAAAASUVORK5CYII="); } /* 갈색 닭 */
+.critter-bunny { --w: 9; --h: 9; background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAJCAYAAAA/33wPAAAAjUlEQVR42qWQMQrDMAxFn0NO4m7paJNcwyfr2HP0HKEhW8aM6ZhO6VTUySCCbQx9iwY9vj4CRWd7OfZN9CRBymtS4ny/UYP2kkHfwVYFaa+NVc+Sd4FlHU1uf/ZMZ3t5To+idOyblJp5FzAiIp/3i1KjXJB3AYBlHU1zvQz8QzzW1sjxci4EIPtMLdXwA3VITvsAj44rAAAAAElFTkSuQmCC"); } /* 토끼 */
+.critter-cat { --w: 13; --h: 9; background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAJCAYAAAAsCDz7AAAAp0lEQVR42mP4ulTlv5aS2X8GLEBLyew/TB6ZTY4eFgYiwOnmdwykAnQ9LKa1Qgynm98xmNZidyEDAwMDQo0QGp94PYww755ufsfw5Ok3BhlpLgwaxWXCCxjYPWwYSdXDRGqQGGYVMZCjByWOYC5Bp2HeZ2BgYLh27xQjOXpYYAxYeMPCFTl80Q1HjwtcCQFZHxMulxISR1cDw0SHJyx/4Mon2NQSIw4Acs5/2aTgS+YAAAAASUVORK5CYII="); } /* 고양이 */
+.critter-dog { --w: 13; --h: 10; background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAKCAYAAACqnE5VAAAArElEQVR42mNkIAC0lMz+I/Ov3TvFSI4eRi0ls/+4NGspmf1PsGBgsDcQhYslzniN10JcepjmZ4hiuAAbgFnAwMDAQI4eFlzeRQfzM0QJBhE+PYxaSmb/YQLyavpwiYe3LuJ1Kal6WJA5uBQiBwE6IFYPCwORADnyiYkfdD0s1+6dYkycAdE4P0MU7hJkNq4Uhsun2OKTBWYQLlcSyjfo8kT5FlkRIQ345LHJAQCq/GGCSLbv8QAAAABJRU5ErkJggg=="); } /* 강아지 */
+.critter-duck { --w: 9; --h: 7; background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAHCAYAAAAF1R1/AAAAfklEQVR42mNgQAJaSmb////6AMdaSmb/GdAALjVMDFiAtoYbAwMDA8Pp5ncM2AzDpoYFm8KrN3ZhuIKQGsb/vz7gtfHavVNEqWFhYGBgePnsAVxSXEoBzr527xQjjE1IDQu6BC5AUI2Wktl/GP66VOX/16UqGLGFLI9MI6sBAIxcXpz+LvqBAAAAAElFTkSuQmCC"); } /* 오리 */
 .work-values .section-title { font-size: clamp(1.25rem, 2vw, 1.65rem); margin-bottom: 6px; }
 /* 업무 전략 회전 카드: 게임 카드 세 장을 같은 칸에 겹쳐 놓고 data-pos 로 자리를 정합니다.
    가운데(center)는 크게 앞에, 다음(next)·이전(prev)은 손에 쥔 패처럼 양옆 뒤에 비스듬히 떠 있습니다.
    카드는 위아래로 천천히 떠다니고, 아래 그림자가 그에 맞춰 작아졌다 커집니다. */
 .strategy-intro { margin-bottom: 20px; }
+/* 카탈로그 메뉴 버튼 세 개: 첫 화면 2×2 창 바로 아래, 같은 폭을 세 칸으로 나눈 작은 RPG 창.
+   위의 요약 수치까지 다 나타난 뒤에 하나씩 나타나고, 누르면 바로 아래에 카탈로그 창이 열립니다. ▼ 는 열리면 ▲ 로 뒤집힙니다. */
+.catalog-menu { justify-self: center; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; width: min(100%, 1180px); }
+.catalog-tab {
+  --tab-fill: var(--gold);
+  --tab-ink: var(--gold-ink);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 10px 16px 10px 10px;
+  border: 3px solid var(--border);
+  background: var(--bg-panel);
+  color: var(--ink);
+  font-family: var(--font-pixel);
+  text-align: left;
+  box-shadow: var(--window-inset), 6px 6px 0 var(--drop);
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform .15s, box-shadow .15s, background-color .15s;
+}
+.catalog-tab.is-fortune { --tab-fill: var(--violet); --tab-ink: var(--violet-ink); }
+.catalog-tab.is-lunch { --tab-fill: var(--rose); --tab-ink: var(--rose-ink); }
+/* 창 왼쪽 위 짧은 색 띠: 다른 창과 같은 표시 */
+.catalog-tab::before { content: ''; position: absolute; top: -3px; left: -3px; width: 34px; height: 3px; background: var(--tab-fill); }
+.catalog-tab:hover { transform: translateY(-3px); box-shadow: var(--window-inset), 6px 9px 0 var(--drop); }
+.catalog-tab:active { transform: translateY(2px); box-shadow: var(--window-inset), 3px 3px 0 var(--drop); }
+.catalog-tab[aria-expanded="true"] { background: color-mix(in srgb, var(--tab-fill) 14%, var(--bg-panel)); box-shadow: inset 0 0 0 3px color-mix(in srgb, var(--tab-fill) 14%, var(--bg-panel)), inset 0 0 0 5px var(--tab-fill), 6px 6px 0 var(--drop); }
+.catalog-tab-icon { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border: 2px solid var(--border); background: var(--tab-fill); color: #fffdf6; box-shadow: inset 3px 3px 0 #ffffff59, inset -3px -3px 0 #00000026; }
+.catalog-tab-icon svg { width: 20px; height: 20px; shape-rendering: crispEdges; }
+.catalog-tab-text { flex: 1; min-width: 0; display: grid; gap: 1px; }
+.catalog-tab-text strong { color: var(--ink); font-size: clamp(.98rem, 1.2vw, 1.12rem); font-weight: 400; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.catalog-tab-text small { color: var(--ink-muted); font-family: var(--font-body); font-size: .76rem; line-height: 1.4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.catalog-tab-go { flex: none; color: var(--tab-ink); font-size: .7rem; transition: transform .2s; }
+.catalog-tab[aria-expanded="true"] .catalog-tab-go { transform: rotate(180deg); }
+/* 카탈로그 창: 메뉴 버튼을 누르면 바로 아래에 열립니다. 첫 화면 창들과 같은 모양 · 같은 폭.
+   창 위쪽 짧은 색 띠와 제목 색은 고른 메뉴 색(업무 전략 금색 · 운세 보라 · 점메추 분홍)을 따라갑니다. */
+.catalog-window {
+  --cat-color: var(--gold);
+  --cat-ink: var(--gold-ink);
+  position: relative;
+  width: min(100%, 1180px);
+  margin: 0 auto;
+  padding: 16px 24px 24px;
+  border: 3px solid var(--border);
+  background: var(--bg-panel);
+  box-shadow: var(--window-inset), 6px 6px 0 var(--drop);
+  animation: catalog-open .38s cubic-bezier(.22, .8, .24, 1) both;
+}
+.catalog-window[hidden] { display: none; }
+.catalog-window[data-cat="fortune"] { --cat-color: var(--violet); --cat-ink: var(--violet-ink); }
+.catalog-window[data-cat="lunch"] { --cat-color: var(--rose); --cat-ink: var(--rose-ink); }
+.catalog-window::before { content: ''; position: absolute; top: -3px; left: -3px; width: 34px; height: 3px; background: var(--cat-color); transition: background-color .15s; }
+@keyframes catalog-open { from { opacity: 0; transform: translateY(-12px); } }
+/* 창 오른쪽 위 닫기 */
+.catalog-close { position: absolute; top: 12px; right: 16px; z-index: 1; padding: 2px 8px; border: 2px solid var(--border); background: var(--bg-panel); color: var(--ink-muted); font-family: var(--font-pixel); font-size: .72rem; line-height: 1.5; cursor: pointer; box-shadow: 2px 2px 0 var(--drop); }
+.catalog-close:hover { color: var(--cat-ink); }
+.catalog-close:active { transform: translate(1px, 1px); box-shadow: none; }
+/* 창 본문: 고른 면 하나만 보이고, 창 높이는 그 면 내용에 딱 맞습니다(빈 공간 없음). */
+.catalog-case { display: block; }
+.catalog-panel { display: none; min-width: 0; }
+.catalog-panel.is-active { display: block; animation: catalog-panel-in .32s cubic-bezier(.22, .8, .24, 1) both; }
+@keyframes catalog-panel-in { from { opacity: 0; transform: translateY(8px); } }
+.catalog-panel-label { display: flex; align-items: baseline; gap: 10px; margin: 0 0 14px; padding-right: 64px; color: var(--cat-ink); font-family: var(--font-pixel); font-size: clamp(.85rem, 1vw, .95rem); line-height: 1.5; }
+.catalog-panel-label::before { content: '▶'; font-size: .7em; }
+.catalog-panel-label b { font-weight: 400; }
+/* 업무 전략 카드 세 장: 요약 창의 칸(옅은 노란 바탕 + 연한 테두리)과 같은 모양으로 나란히. 마우스를 올리면 살짝 들립니다. */
+.cat-items { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.cat-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px 12px;
+  border: 2px solid #e8d8b2;
+  background: var(--bg-panel-alt);
+  color: var(--ink);
+  transition: transform .15s, border-color .15s, box-shadow .15s;
+}
+.cat-item:hover { transform: translateY(-3px); border-color: var(--gold); box-shadow: 3px 3px 0 var(--drop); }
+.cat-item-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-family: var(--font-pixel); }
+.cat-item-no { padding: 1px 7px; border: 2px solid var(--gold); background: var(--bg-panel); color: var(--gold-ink); font-size: .72rem; letter-spacing: .06em; }
+.cat-item-key { color: var(--gold-ink); font-size: .95rem; }
+.cat-item-key small { margin-left: 3px; color: #8f89b0; font-size: .64rem; }
+/* 아이콘 칸: 프로필 사진 칸처럼 하늘색 모눈 바탕 */
+.cat-item-art { display: grid; place-items: center; height: 92px; border: 2px solid var(--border); background-color: #e6f5ff; background: linear-gradient(#2b2a4a0f 1px, transparent 1px) 0 0 / 12px 12px, linear-gradient(90deg, #2b2a4a0f 1px, transparent 1px) 0 0 / 12px 12px, radial-gradient(ellipse at 50% 40%, #ffffff, #cfeaff 80%); color: var(--gold-ink); }
+.cat-item-art svg { width: 50px; height: 50px; filter: drop-shadow(2px 2px 0 #f5a52466); }
+.cat-item-title { margin: 2px 0 0; color: var(--ink); font-family: var(--font-pixel); font-size: 1.02rem; font-weight: 400; line-height: 1.45; text-align: center; word-break: keep-all; }
+.cat-item-effects { flex: 1; display: grid; align-content: start; gap: 8px; margin: 0; padding: 10px 0 0; border-top: 1px solid #e8d8b2; list-style: none; }
+.cat-item-effects li { position: relative; padding-left: 14px; color: var(--ink); font-size: .86rem; line-height: 1.6; opacity: .88; word-break: keep-all; }
+.cat-item-effects li::before { content: '▶'; position: absolute; left: 0; top: .1em; color: var(--gold); font-size: .55rem; }
+.cat-item-foot { display: flex; justify-content: space-between; margin: 0; padding-top: 8px; border-top: 1px dashed #e8d8b2; color: #8f89b0; font-family: var(--font-pixel); font-size: .62rem; }
+/* 운세 면: 왼쪽 운세 카드, 오른쪽 행운 정보 / 점메추 면: 왼쪽 슬롯머신, 오른쪽 한마디와 다시 돌리기 */
+.fortune-layout, .lunch-layout { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 16px; align-items: stretch; }
+/* 운세: 왼쪽 큰 운세 카드와 오른쪽 행운 정보 여섯 칸(2×3)이 같은 높이로 맞춰지고, 칸 크기도 모두 같습니다. */
+.fortune-layout .fortune-card { display: grid; align-content: center; gap: 6px; min-height: 236px; margin: 0; padding: 30px 28px; }
+.fortune-layout .fortune-grade { margin: 0; font-size: 3rem; }
+.fortune-layout .fortune-text { font-size: 1.05rem; }
+.fortune-side { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 10px; }
+.fortune-side .fortune-stats { grid-auto-rows: minmax(0, 1fr); gap: 10px; margin: 0; }
+.fortune-side .fortune-stats div { padding: 10px 16px; }
+.fortune-side .fortune-stats dt { font-size: .8rem; }
+.fortune-side .fortune-stats dd { font-size: 1rem; }
+.fortune-side .fortune-note { text-align: right; }
+/* 점메추: 왼쪽 슬롯머신과 오른쪽 '오늘의 한마디' 칸이 같은 높이. 한마디 칸은 운세의 행운 정보 칸과 같은 모양입니다. */
+.lunch-layout .lunch-slot { min-height: 236px; margin: 0; }
+.lunch-layout .lunch-emoji { font-size: 4rem; }
+.lunch-layout .lunch-name { font-size: 2rem; }
+.lunch-side { display: grid; align-content: center; justify-items: center; gap: 18px; padding: 24px 28px; border: 2px solid #e8d8b2; background: #fffdf8; }
+.lunch-side::before { content: '오늘의 한마디'; padding: 2px 10px; border: 2px solid var(--rose); color: var(--rose-ink); font-family: var(--font-pixel); font-size: .78rem; }
+.lunch-side .lunch-comment { margin: 0; font-size: 1.15rem; line-height: 1.7; }
+.lunch-side .lunch-actions .info-jump { padding: 10px 22px; font-size: .92rem; }
 .strategy-lead { margin: 0; color: var(--ink-muted); font-size: .95rem; }
 .strategy-carousel { --card-w: min(320px, 30vw); --side-x: 84%; --side-y: 22px; --side-tilt: 7deg; --side-scale: .86; position: relative; }
 .strategy-stage { display: grid; justify-items: center; padding: 30px 0 10px; overflow-x: clip; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
@@ -1040,6 +1214,8 @@ main:has(> .tab-panel[data-panel="home"]:not([hidden])) + .site-footer { margin-
   .hero .stat-badges strong { font-size: 1.25rem; }
   .hero .stat-badges strong.stat-phrase { font-size: 1rem; }
   .work-values { padding-inline: 28px; }
+  .catalog-menu { gap: 14px; }
+  .catalog-tab-text small { display: none; }
   .strategy-carousel { --card-w: min(300px, 36vw); --side-x: 80%; }
 }
 @media (max-width: 740px) {
@@ -1081,12 +1257,38 @@ main:has(> .tab-panel[data-panel="home"]:not([hidden])) + .site-footer { margin-
   .hero .stat-kind { font-size: .68rem; }
   .hero .stat-kind::before { width: 5px; height: 5px; margin-right: 5px; }
   .hero .stat-badges span { font-size: .78rem; }
-  .hero-scroll { font-size: .72rem; }
-  .work-values { padding: 56px 22px; }
-  .work-values { padding-bottom: 120px; }
-  .work-values::after { height: 84px; background-size: 336px 84px; }
+  .work-values { padding: 0 20px; }
+  .catalog-window { max-width: 640px; padding: 12px 12px 16px; }
+  .catalog-close { top: 8px; right: 10px; }
+  .catalog-menu { gap: 8px; max-width: 640px; }
+  .catalog-tab { flex-direction: column; justify-content: center; gap: 5px; padding: 8px 4px 7px; border-width: 2px; text-align: center; box-shadow: var(--window-inset), 3px 4px 0 var(--drop); }
+  .catalog-tab:hover { box-shadow: var(--window-inset), 3px 6px 0 var(--drop); }
+  .catalog-tab[aria-expanded="true"] { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--tab-fill) 14%, var(--bg-panel)), inset 0 0 0 4px var(--tab-fill), 3px 4px 0 var(--drop); }
+  .catalog-tab::before { top: -2px; left: -2px; width: 22px; }
+  .catalog-tab-text small { display: none; }
+  .catalog-tab-icon { width: 28px; height: 28px; }
+  .catalog-tab-icon svg { width: 14px; height: 14px; }
+  .catalog-tab-text strong { font-size: .78rem; white-space: normal; text-align: center; }
+  .catalog-tab-go { font-size: .55rem; }
+  /* 좁은 화면: 카드 세 장을 옆으로 밀어서 봅니다(한 장씩 딱 멈춤). */
+  .cat-items { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 82%; gap: 12px; margin-inline: -12px; padding: 4px 12px 8px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .cat-items::-webkit-scrollbar { display: none; }
+  .cat-item { scroll-snap-align: center; }
+  .cat-item-art { height: 70px; }
+  .cat-item-art svg { width: 42px; height: 42px; }
+  .fortune-layout, .lunch-layout { grid-template-columns: 1fr; gap: 12px; }
+  .fortune-layout .fortune-card { min-height: 0; padding: 22px 16px; }
+  .fortune-layout .fortune-grade { font-size: 2.2rem; }
+  .fortune-layout .fortune-text { font-size: .95rem; }
+  .lunch-layout .lunch-slot { min-height: 180px; }
+  .lunch-layout .lunch-name { font-size: 1.6rem; }
+  .lunch-side { gap: 12px; padding: 16px; }
+  .lunch-side .lunch-comment { font-size: 1rem; }
+  .catalog-case .fortune-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .catalog-case .fortune-stats div { flex-direction: column; align-items: flex-start; gap: 2px; padding: 6px 8px; }
+  .catalog-case .fortune-stats dd { text-align: left; font-size: .84rem; }
   /* 좁은 화면: 가운데 카드가 화면 대부분을 차지하고, 양옆 카드는 가장자리에 비스듬히 살짝 보입니다. */
-  .strategy-carousel { --card-w: min(300px, 76vw); --side-x: 90%; --side-y: 16px; --side-tilt: 6deg; margin-inline: -22px; }
+  .strategy-carousel { --card-w: min(300px, 76vw); --side-x: 90%; --side-y: 16px; --side-tilt: 6deg; margin-inline: -8px; }
   .strategy-stage { padding-top: 20px; }
   .gcard-art { height: 128px; }
   .gcard-art svg { width: 66px; height: 66px; }
@@ -1105,10 +1307,18 @@ main:has(> .tab-panel[data-panel="home"]:not([hidden])) + .site-footer { margin-
   .role-caption { margin-bottom: 5px; padding-bottom: 4px; }
   .hero .stat-badges { grid-template-rows: minmax(5px, 1fr) auto auto auto minmax(7px, 1fr); }
   .hero .stat-badges span { font-size: .74rem; line-height: 1.35; }
-  .hero-scroll { flex-direction: row; gap: 12px; padding-block: 4px; }
 }
 /* 노트북처럼 세로가 낮은 화면: 여백을 줄여 스크롤 안내까지 한 화면에 담습니다. */
 @media (min-width: 741px) and (max-height: 800px) {
+  .catalog-window { padding-block: 12px 16px; }
+  .catalog-tab { padding-block: 6px; }
+  .catalog-tab-icon { width: 34px; height: 34px; }
+  .catalog-tab-text small { display: none; }
+  .catalog-panel-label { margin-bottom: 12px; }
+  .cat-item { gap: 7px; padding: 12px 12px 10px; }
+  .cat-item-art { height: 78px; }
+  .cat-item-art svg { width: 44px; height: 44px; }
+  .cat-item-effects li { font-size: .82rem; line-height: 1.55; }
   .hero { padding-top: 20px; padding-bottom: 10px; gap: 10px; }
   .hero-layout { gap: 18px; }
   .role-menu { padding-block: 12px 14px; }
@@ -1148,7 +1358,6 @@ main:has(> .tab-panel[data-panel="home"]:not([hidden])) + .site-footer { margin-
   .hero .stat-badges strong { font-size: 1.1rem; line-height: 1.25; }
   .hero .stat-badges strong.stat-phrase { font-size: .95rem; line-height: 1.3; }
   .hero .stat-badges span { margin-top: 0; font-size: .75rem; line-height: 1.35; }
-  .hero-scroll { flex-direction: row; gap: 12px; padding-block: 2px; font-size: .72rem; }
 }
 @media (max-width: 380px) {
   .hero-dialogue .dialogue-label { line-height: 1.4; }
@@ -1172,9 +1381,15 @@ main:has(> .tab-panel[data-panel="home"]:not([hidden])) + .site-footer { margin-
   .role-hint::before { animation: none; }
   .dialogue-glyph.is-caret::after, .dialogue-switch-icon { animation: none; opacity: 1; }
   .strategy, .strategy-card, .strategy-dot, .strategy-arrow { transition: none; }
+  .catalog-tab, .catalog-tab-go, .cat-item, .catalog-window::before { transition: none; }
+  .catalog-panel.is-active { animation: none; }
+  .catalog-window { animation: none; }
+  .catalog-tab:hover { transform: none; }
+  .cat-item:hover { transform: none; }
   .hero .stat-badges li.stat-go { transition: none; }
   .hero .stat-badges li.stat-go:hover, .hero .stat-badges li.stat-go:focus-within { transform: none; }
   .go-dialog[open] { animation: none; }
+  .go-dialog[open]::backdrop, .info-dialog[open]::backdrop { animation: none; }
   .strategy-float, .strategy-shadow, .gcard-art svg, .gcard-spark, .strategy-card::after { animation: none !important; }
 }
 
@@ -1187,7 +1402,8 @@ main:has(> .tab-panel[data-panel="home"]:not([hidden])) + .site-footer { margin-
   box-shadow: var(--window-inset), 8px 8px 0 var(--drop);
   color: var(--ink);
 }
-.go-dialog[open] { animation: go-dialog-in .24s steps(3, end); }
+.go-dialog[open] { animation: go-dialog-in .32s cubic-bezier(.22, .8, .24, 1); }
+.go-dialog[open]::backdrop, .info-dialog[open]::backdrop { animation: backdrop-in .3s ease-out; }
 .go-dialog::backdrop { background: #2b2a4a73; }
 .go-dialog-body { margin: 0; padding: 22px 22px 20px; text-align: center; }
 .go-dialog-label { margin: 0 0 8px; color: var(--gold-ink); font-family: var(--font-pixel); font-size: .78rem; }
@@ -1211,10 +1427,14 @@ main:has(> .tab-panel[data-panel="home"]:not([hidden])) + .site-footer { margin-
 .go-dialog-btn::before { content: '▶'; position: absolute; left: 8px; top: 50%; font-size: .6rem; transform: translateY(-50%); opacity: 0; }
 .go-dialog-btn:hover::before, .go-dialog-btn:focus-visible::before { opacity: 1; animation: dialogue-caret-blink 1s step-end infinite; }
 .go-dialog-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--border); }
-@keyframes go-dialog-in { from { opacity: 0; transform: translateY(8px) scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes go-dialog-in { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes backdrop-in { from { opacity: 0; } to { opacity: 1; } }
 
-/* 기획 칸 자세히 보기 창: 크림색 창 안에 경력 항목·사진 모음. 내용이 길면 창 안에서 스크롤됩니다. */
+/* 기획·운영 칸 자세히 보기 창: 크림색 창 안에 경력 항목·사진 모음. 내용이 길면 창 안에서 스크롤됩니다.
+   --info-ink/--info-fill 로 분야 색을 정합니다. (기본 하늘색 = 기획, .is-ops = 민트 = 운영) */
 .info-dialog {
+  --info-ink: var(--sky-ink);
+  --info-fill: var(--sky);
   width: min(720px, calc(100vw - 32px));
   max-height: min(86vh, 860px);
   padding: 0;
@@ -1225,7 +1445,7 @@ main:has(> .tab-panel[data-panel="home"]:not([hidden])) + .site-footer { margin-
   overflow: auto;
   overscroll-behavior: contain;
 }
-.info-dialog[open] { animation: go-dialog-in .24s steps(3, end); }
+.info-dialog[open] { animation: go-dialog-in .32s cubic-bezier(.22, .8, .24, 1); }
 /* 창 스크롤바: 픽셀 게임 느낌의 각진 금색 막대 + 크림색 홈 */
 /* 파이어폭스는 아래 ::-webkit-scrollbar 를 모르므로 색만 지정합니다. (크롬은 scrollbar-color 가 있으면 픽셀 스타일을 무시해서 분리) */
 @supports not selector(::-webkit-scrollbar) {
@@ -1249,7 +1469,7 @@ main:has(> .tab-panel[data-panel="home"]:not([hidden])) + .site-footer { margin-
 .info-dialog::backdrop { background: #2b2a4a73; }
 .info-dialog-body { padding: 22px 26px 26px; }
 .info-dialog-head { position: relative; margin-bottom: 16px; padding: 0 44px 12px 0; border-bottom: 1px solid #e5d6b4; }
-.info-dialog-label { margin: 0 0 4px; color: var(--sky-ink); font-family: var(--font-pixel); font-size: .78rem; }
+.info-dialog-label { margin: 0 0 4px; color: var(--info-ink); font-family: var(--font-pixel); font-size: .78rem; }
 .info-dialog-title { margin: 0; font-size: 1.2rem; word-break: keep-all; }
 .info-dialog-close {
   position: absolute;
@@ -1275,17 +1495,17 @@ main:has(> .tab-panel[data-panel="home"]:not([hidden])) + .site-footer { margin-
 .info-entry-text { min-width: 0; flex: 1; }
 .info-entry-date { margin: 0 0 4px; color: var(--ink-muted); font-family: var(--font-pixel); font-size: .72rem; }
 .info-entry h3 { margin: 0 0 8px; font-size: 1rem; line-height: 1.5; word-break: keep-all; }
-.info-entry h3 span { margin-left: 4px; color: var(--sky-ink); font-family: var(--font-body); font-size: .82rem; font-weight: 600; }
+.info-entry h3 span { margin-left: 4px; color: var(--info-ink); font-family: var(--font-body); font-size: .82rem; font-weight: 600; }
 .info-entry p { margin: 0 0 10px; color: var(--ink); font-size: .9rem; line-height: 1.7; word-break: keep-all; }
-.info-entry-role b, .info-list b { margin-right: 6px; color: var(--sky-ink); font-weight: 700; }
+.info-entry-role b, .info-list b { margin-right: 6px; color: var(--info-ink); font-weight: 700; }
 .info-list { margin: 0 0 12px; padding: 0; list-style: none; display: grid; gap: 7px; }
 .info-list li { position: relative; padding-left: 14px; color: var(--ink); font-size: .88rem; line-height: 1.65; word-break: keep-all; }
-.info-list li::before { content: '▸'; position: absolute; left: 0; color: var(--sky); }
-.info-link { display: inline-block; color: var(--sky-ink); font-family: var(--font-pixel); font-size: .8rem; border-bottom: 2px solid currentColor; }
+.info-list li::before { content: '▸'; position: absolute; left: 0; color: var(--info-fill); }
+.info-link { display: inline-block; color: var(--info-ink); font-family: var(--font-pixel); font-size: .8rem; border-bottom: 2px solid currentColor; }
 .info-link:hover { color: var(--gold-ink); }
 .info-jumps { display: flex; flex-wrap: wrap; gap: 8px; }
 .info-jump { padding: 6px 12px; border: 2px solid var(--border); background: var(--bg-panel-alt); color: var(--ink); font-family: var(--font-pixel); font-size: .78rem; box-shadow: 2px 2px 0 var(--border); cursor: pointer; }
-.info-jump:hover { background: #e3f1ff; color: var(--sky-ink); }
+.info-jump:hover { background: #e3f1ff; color: var(--info-ink); }
 /* 사진 모음: 두 칸 격자, 넓은 사진(신문 지면)은 한 줄 전체. 사진을 누르면 원본이 새 탭에서 열립니다. */
 .info-gallery { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 16px; }
 .info-gallery figure { margin: 0; }
@@ -1294,8 +1514,64 @@ main:has(> .tab-panel[data-panel="home"]:not([hidden])) + .site-footer { margin-
 .info-gallery a:hover { transform: translateY(-2px); }
 .info-gallery img { width: 100%; height: auto; }
 .info-gallery figcaption { margin-top: 6px; color: var(--ink-muted); font-size: .78rem; text-align: center; }
+.info-dialog.is-ops { --info-ink: var(--mint-ink); --info-fill: var(--mint); }
+/* 처리량 막대: 0 ~ 7,000건 눈금 위에 하루 처리 범위를 칸으로 표시 */
+.info-bars { margin: 0 0 16px; padding: 16px; border: 2px solid #e8d8b2; background: #fffdf8; display: grid; gap: 14px; }
+.info-bar-row { display: grid; grid-template-columns: minmax(0, 11em) minmax(0, 1fr); gap: 6px 14px; align-items: center; }
+.info-bar-name { font-size: .86rem; line-height: 1.45; color: var(--ink); word-break: keep-all; }
+.info-bar-name small { display: block; color: var(--ink-muted); font-size: .74rem; }
+.info-bar-track { position: relative; height: 22px; border: 2px solid var(--border); background: repeating-linear-gradient(90deg, #f3e8cf 0 calc(100% / 7 - 1px), #e2d3ad calc(100% / 7 - 1px) calc(100% / 7)); }
+.info-bar-fill { position: absolute; top: 0; bottom: 0; left: var(--from); right: calc(100% - var(--to)); background: var(--info-fill); box-shadow: inset 0 3px 0 #ffffff59, inset 0 -3px 0 #00000026; }
+.info-bar-value { grid-column: 2; margin-top: -2px; color: var(--info-ink); font-family: var(--font-pixel); font-size: .78rem; }
+.info-bar-scale { display: flex; justify-content: space-between; margin: 0; color: var(--ink-muted); font-family: var(--font-pixel); font-size: .62rem; }
+/* 성과 흐름: 단계 칸이 ▶ 로 이어지고 마지막 칸이 큰 결과 숫자 */
+.info-flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; margin: 0 0 16px; padding: 0; list-style: none; }
+.info-flow li { flex: 1 1 120px; display: grid; place-items: center; padding: 10px; border: 2px solid #e8d8b2; background: #fffdf8; color: var(--ink); font-size: .84rem; line-height: 1.5; text-align: center; word-break: keep-all; }
+.info-flow li.is-result { border-color: var(--info-fill); background: color-mix(in srgb, var(--info-fill) 14%, var(--bg-panel)); }
+.info-flow li.is-result strong { display: block; color: var(--info-ink); font-family: var(--font-pixel); font-size: 1.6rem; line-height: 1.2; }
+.info-flow-arrow { flex: 0 0 auto !important; padding: 0 !important; border: 0 !important; background: none !important; color: var(--info-fill) !important; font-size: .8rem !important; }
+@media (max-width: 560px) {
+  .info-bar-row { grid-template-columns: 1fr; }
+  .info-bar-value { grid-column: 1; }
+  .info-bar-row > span:empty { display: none; }
+  .info-flow { flex-direction: column; }
+  .info-flow li { flex: none; }
+  .info-flow-arrow { transform: rotate(90deg); }
+}
+.info-dialog.is-fortune { --info-ink: var(--violet-ink); --info-fill: var(--violet); }
+.info-dialog.is-lunch { --info-ink: var(--rose-ink); --info-fill: var(--rose); }
+/* 오늘의 운세: 보라색 운세 카드 + 운 지수 별 + 행운 아이템 */
+.fortune-card { position: relative; margin: 0 0 16px; padding: 22px 20px 20px; border: 3px solid var(--border); background: radial-gradient(circle at 50% 0%, #ffffff, #f1ebff 70%); box-shadow: inset 0 0 0 3px #fffdf6, inset 0 0 0 5px color-mix(in srgb, var(--violet) 45%, #fffdf6); text-align: center; }
+.fortune-grade { margin: 0 0 8px; color: var(--violet-ink); font-family: var(--font-pixel); font-size: 2rem; line-height: 1.2; letter-spacing: .1em; text-shadow: 2px 2px 0 #e3d9ff; }
+.fortune-text { margin: 0; color: var(--ink); font-size: 1rem; line-height: 1.7; word-break: keep-all; }
+.fortune-card::before, .fortune-card::after { content: '✦'; position: absolute; top: 12px; color: var(--violet); font-size: .9rem; animation: dialogue-caret-blink 1.6s step-end infinite; }
+.fortune-card::before { left: 16px; }
+.fortune-card::after { right: 16px; animation-delay: .8s; }
+.fortune-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0 0 12px; }
+.fortune-stats div { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 12px; border: 2px solid #e8d8b2; background: #fffdf8; }
+.fortune-stats dt { color: var(--ink-muted); font-family: var(--font-pixel); font-size: .74rem; }
+.fortune-stats dd { margin: 0; color: var(--ink); font-size: .9rem; font-weight: 600; text-align: right; word-break: keep-all; }
+.fortune-stats .fortune-stars { color: var(--gold); letter-spacing: .08em; text-shadow: 1px 1px 0 #b46b00; }
+.fortune-stats .fortune-stars span { color: #e2d3ad; text-shadow: none; }
+.fortune-swatch { display: inline-block; width: 14px; height: 14px; margin-right: 6px; border: 2px solid var(--border); vertical-align: -2px; }
+.fortune-note { margin: 0; color: var(--ink-muted); font-size: .78rem; text-align: center; }
+/* 오늘의 점메추: 슬롯머신 창에서 메뉴가 빠르게 돌다가 하나에 멈춥니다. */
+.lunch-slot { position: relative; display: grid; place-items: center; gap: 6px; min-height: 170px; margin: 0 0 14px; padding: 18px; border: 3px solid var(--border); background: repeating-linear-gradient(0deg, #fff6f8 0 10px, #ffeef2 10px 20px); box-shadow: inset 0 0 0 3px #fffdf6, inset 0 0 0 5px color-mix(in srgb, var(--rose) 45%, #fffdf6); overflow: hidden; text-align: center; }
+.lunch-slot::before, .lunch-slot::after { content: ''; position: absolute; left: 12px; right: 12px; height: 2px; background: color-mix(in srgb, var(--rose) 40%, transparent); }
+.lunch-slot::before { top: 14px; }
+.lunch-slot::after { bottom: 14px; }
+.lunch-emoji { font-size: 3.2rem; line-height: 1; }
+.lunch-name { margin: 0; color: var(--rose-ink); font-family: var(--font-pixel); font-size: 1.5rem; line-height: 1.3; }
+.lunch-slot.is-rolling .lunch-emoji, .lunch-slot.is-rolling .lunch-name { filter: blur(1px); opacity: .75; }
+.lunch-slot.is-done .lunch-emoji { animation: lunch-pop .5s cubic-bezier(.22, .8, .24, 1.4); }
+@keyframes lunch-pop { 0% { transform: scale(.6); } 100% { transform: scale(1); } }
+.lunch-comment { min-height: 1.6em; margin: 0 0 14px; color: var(--ink); font-size: .95rem; line-height: 1.6; text-align: center; word-break: keep-all; }
+.lunch-actions { display: flex; justify-content: center; }
+.lunch-actions .info-jump { padding: 9px 18px; font-size: .86rem; }
+.lunch-actions .info-jump:disabled { opacity: .55; cursor: wait; }
 @media (max-width: 560px) {
   .info-dialog-body { padding: 18px 16px 20px; }
+  .fortune-stats { grid-template-columns: 1fr; }
   .info-entry { flex-direction: column; padding: 14px; }
   .info-entry-thumb { width: 120px; }
   .info-gallery { grid-template-columns: 1fr; }
@@ -1303,6 +1579,7 @@ main:has(> .tab-panel[data-panel="home"]:not([hidden])) + .site-footer { margin-
 @media (prefers-reduced-motion: reduce) {
   .info-dialog[open] { animation: none; }
   .info-gallery a { transition: none; }
+  .fortune-card::before, .fortune-card::after, .lunch-slot.is-done .lunch-emoji { animation: none; }
 }
 
 /* Intro: the scenery, pickups and progress share one animation clock.
